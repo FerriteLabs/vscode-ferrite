@@ -1,0 +1,301 @@
+{
+  "name": "ferrite",
+  "displayName": "Ferrite",
+  "description": "Ferrite database support for VS Code - syntax highlighting, snippets, and connection management",
+  "version": "1.0.0",
+  "publisher": "ferrite",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ferritelabs/vscode-ferrite"
+  },
+  "homepage": "https://ferrite.dev",
+  "bugs": {
+    "url": "https://github.com/ferritelabs/vscode-ferrite/issues"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Other"
+  ],
+  "keywords": [
+    "ferrite",
+    "redis",
+    "database",
+    "cache",
+    "key-value"
+  ],
+  "icon": "images/ferrite-icon.png",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onLanguage:ferrite",
+    "onLanguage:ferriteql",
+    "onCommand:ferrite.connect",
+    "workspaceContains:**/ferrite.toml"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "ferriteql",
+        "aliases": ["FerriteQL", "ferriteql"],
+        "extensions": [".fql", ".ferriteql"],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "ferrite-config",
+        "aliases": ["Ferrite Config"],
+        "filenames": ["ferrite.toml"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "ferriteql",
+        "scopeName": "source.ferriteql",
+        "path": "./syntaxes/ferriteql.tmLanguage.json"
+      },
+      {
+        "language": "ferrite-config",
+        "scopeName": "source.ferrite-config",
+        "path": "./syntaxes/ferrite-config.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "ferriteql",
+        "path": "./snippets/ferriteql.json"
+      },
+      {
+        "language": "javascript",
+        "path": "./snippets/ferrite-js.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./snippets/ferrite-js.json"
+      },
+      {
+        "language": "python",
+        "path": "./snippets/ferrite-python.json"
+      },
+      {
+        "language": "rust",
+        "path": "./snippets/ferrite-rust.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "ferrite.connect",
+        "title": "Ferrite: Connect to Server",
+        "icon": "$(plug)"
+      },
+      {
+        "command": "ferrite.disconnect",
+        "title": "Ferrite: Disconnect",
+        "icon": "$(debug-disconnect)"
+      },
+      {
+        "command": "ferrite.executeCommand",
+        "title": "Ferrite: Execute Command",
+        "icon": "$(play)"
+      },
+      {
+        "command": "ferrite.executeSelection",
+        "title": "Ferrite: Execute Selection",
+        "icon": "$(run)"
+      },
+      {
+        "command": "ferrite.showServerInfo",
+        "title": "Ferrite: Show Server Info",
+        "icon": "$(info)"
+      },
+      {
+        "command": "ferrite.browseKeys",
+        "title": "Ferrite: Browse Keys",
+        "icon": "$(list-tree)"
+      },
+      {
+        "command": "ferrite.flushDb",
+        "title": "Ferrite: Flush Database",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "ferrite.validateConfig",
+        "title": "Ferrite: Validate Configuration"
+      },
+      {
+        "command": "ferrite.refreshKeys",
+        "title": "Ferrite: Refresh Keys",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "ferrite.refreshInfo",
+        "title": "Ferrite: Refresh Server Info",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "ferrite.inspectKey",
+        "title": "Ferrite: Inspect Key"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "ferrite.executeCommand",
+        "key": "ctrl+enter",
+        "mac": "cmd+enter",
+        "when": "editorTextFocus && editorLangId == ferriteql"
+      },
+      {
+        "command": "ferrite.executeSelection",
+        "key": "ctrl+shift+enter",
+        "mac": "cmd+shift+enter",
+        "when": "editorTextFocus && editorLangId == ferriteql && editorHasSelection"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "ferrite.executeSelection",
+          "when": "editorLangId == ferriteql && editorHasSelection",
+          "group": "ferrite"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "ferrite.executeCommand",
+          "when": "editorLangId == ferriteql",
+          "group": "navigation"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ferrite-explorer",
+          "title": "Ferrite",
+          "icon": "images/ferrite-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "ferrite-explorer": [
+        {
+          "id": "ferrite-connections",
+          "name": "Connections"
+        },
+        {
+          "id": "ferrite-keys",
+          "name": "Keys",
+          "when": "ferrite.connected"
+        },
+        {
+          "id": "ferrite-info",
+          "name": "Server Info",
+          "when": "ferrite.connected"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Ferrite",
+      "properties": {
+        "ferrite.connections": {
+          "type": "array",
+          "default": [],
+          "scope": "machine",
+          "description": "Saved Ferrite connections (stored locally, not synced)",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Connection name"
+              },
+              "host": {
+                "type": "string",
+                "default": "localhost",
+                "description": "Ferrite server host"
+              },
+              "port": {
+                "type": "number",
+                "default": 6379,
+                "description": "Ferrite server port"
+              },
+              "password": {
+                "type": "string",
+                "description": "Authentication password"
+              },
+              "database": {
+                "type": "number",
+                "default": 0,
+                "description": "Database number"
+              },
+              "tls": {
+                "type": "boolean",
+                "default": false,
+                "description": "Use TLS connection"
+              }
+            }
+          }
+        },
+        "ferrite.defaultConnection": {
+          "type": "string",
+          "default": "",
+          "description": "Default connection name"
+        },
+        "ferrite.maxKeys": {
+          "type": "number",
+          "default": 1000,
+          "description": "Maximum number of keys to display in browser"
+        },
+        "ferrite.autoConnect": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically connect on startup"
+        },
+        "ferrite.outputFormat": {
+          "type": "string",
+          "enum": ["json", "table", "raw"],
+          "default": "json",
+          "description": "Output format for command results"
+        },
+        "ferrite.validateConfigOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Validate ferrite.toml on save"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.10.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "@vscode/test-electron": "^2.3.8",
+    "@vscode/vsce": "^2.22.0",
+    "eslint": "^8.55.0",
+    "glob": "^10.3.10",
+    "mocha": "^10.2.0",
+    "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "ioredis": "^5.3.2"
+  }
+}
