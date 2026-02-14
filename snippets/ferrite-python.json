@@ -1,0 +1,139 @@
+{
+  "Ferrite Client Setup": {
+    "prefix": "ferrite-client",
+    "body": [
+      "import ferrite",
+      "",
+      "client = ferrite.Ferrite(",
+      "    host='${1:localhost}',",
+      "    port=${2:6379},",
+      ")",
+      "$0"
+    ],
+    "description": "Create a Ferrite client"
+  },
+  "Ferrite Async Client Setup": {
+    "prefix": "ferrite-async-client",
+    "body": [
+      "import ferrite.aio",
+      "",
+      "client = await ferrite.aio.Ferrite.create(",
+      "    host='${1:localhost}',",
+      "    port=${2:6379},",
+      ")",
+      "$0"
+    ],
+    "description": "Create an async Ferrite client"
+  },
+  "Ferrite Get": {
+    "prefix": "ferrite-get",
+    "body": ["${1:value} = client.get('${2:key}')"],
+    "description": "Get a value"
+  },
+  "Ferrite Set": {
+    "prefix": "ferrite-set",
+    "body": ["client.set('${1:key}', '${2:value}')"],
+    "description": "Set a value"
+  },
+  "Ferrite Set with Expiration": {
+    "prefix": "ferrite-setex",
+    "body": ["client.set('${1:key}', '${2:value}', ex=${3:3600})"],
+    "description": "Set a value with expiration"
+  },
+  "Ferrite Hash Set": {
+    "prefix": "ferrite-hset",
+    "body": [
+      "client.hset('${1:key}', mapping={",
+      "    '${2:field}': '${3:value}',",
+      "})"
+    ],
+    "description": "Set hash fields"
+  },
+  "Ferrite Hash Get All": {
+    "prefix": "ferrite-hgetall",
+    "body": ["${1:data} = client.hgetall('${2:key}')"],
+    "description": "Get all hash fields"
+  },
+  "Ferrite List Push": {
+    "prefix": "ferrite-lpush",
+    "body": ["client.lpush('${1:key}', '${2:value}')"],
+    "description": "Push to list"
+  },
+  "Ferrite List Range": {
+    "prefix": "ferrite-lrange",
+    "body": ["${1:items} = client.lrange('${2:key}', 0, -1)"],
+    "description": "Get list range"
+  },
+  "Ferrite Pipeline": {
+    "prefix": "ferrite-pipeline",
+    "body": [
+      "with client.pipeline() as pipe:",
+      "    pipe.set('${1:key1}', '${2:value1}')",
+      "    pipe.get('${3:key2}')",
+      "    ${4:results} = pipe.execute()"
+    ],
+    "description": "Execute pipeline"
+  },
+  "Ferrite Pub/Sub Subscribe": {
+    "prefix": "ferrite-subscribe",
+    "body": [
+      "pubsub = client.pubsub()",
+      "pubsub.subscribe('${1:channel}')",
+      "",
+      "for message in pubsub.listen():",
+      "    if message['type'] == 'message':",
+      "        print(message['data'])"
+    ],
+    "description": "Subscribe to channel"
+  },
+  "Ferrite Transaction": {
+    "prefix": "ferrite-transaction",
+    "body": [
+      "with client.pipeline(transaction=True) as pipe:",
+      "    pipe.watch('${1:key}')",
+      "    value = client.get('${1:key}')",
+      "    pipe.multi()",
+      "    pipe.set('${1:key}', ${2:new_value})",
+      "    try:",
+      "        pipe.execute()",
+      "    except ferrite.WatchError:",
+      "        pass  # Key was modified"
+    ],
+    "description": "Execute transaction with watch"
+  },
+  "Ferrite Vector Search": {
+    "prefix": "ferrite-vector-search",
+    "body": [
+      "results = client.execute_command(",
+      "    'VECTOR.SEARCH',",
+      "    '${1:index}',",
+      "    json.dumps(${2:embedding}),",
+      "    'TOP_K',",
+      "    '${3:10}'",
+      ")"
+    ],
+    "description": "Vector similarity search"
+  },
+  "Ferrite Cache Decorator": {
+    "prefix": "ferrite-cache-decorator",
+    "body": [
+      "from functools import wraps",
+      "import json",
+      "",
+      "def cached(ttl=${1:3600}):",
+      "    def decorator(func):",
+      "        @wraps(func)",
+      "        def wrapper(*args, **kwargs):",
+      "            key = f'{func.__name__}:{args}:{kwargs}'",
+      "            cached = client.get(key)",
+      "            if cached:",
+      "                return json.loads(cached)",
+      "            result = func(*args, **kwargs)",
+      "            client.set(key, json.dumps(result), ex=ttl)",
+      "            return result",
+      "        return wrapper",
+      "    return decorator"
+    ],
+    "description": "Caching decorator"
+  }
+}

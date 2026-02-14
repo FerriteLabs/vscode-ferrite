@@ -1,0 +1,292 @@
+{
+  "Get Key": {
+    "prefix": "get",
+    "body": ["GET ${1:key}"],
+    "description": "Get the value of a key"
+  },
+  "Set Key": {
+    "prefix": "set",
+    "body": ["SET ${1:key} \"${2:value}\""],
+    "description": "Set a key to a value"
+  },
+  "Set with Expiration": {
+    "prefix": "setex",
+    "body": ["SET ${1:key} \"${2:value}\" EX ${3:seconds}"],
+    "description": "Set a key with expiration"
+  },
+  "Set if Not Exists": {
+    "prefix": "setnx",
+    "body": ["SET ${1:key} \"${2:value}\" NX"],
+    "description": "Set a key only if it doesn't exist"
+  },
+  "Multi Get": {
+    "prefix": "mget",
+    "body": ["MGET ${1:key1} ${2:key2}"],
+    "description": "Get multiple keys"
+  },
+  "Multi Set": {
+    "prefix": "mset",
+    "body": ["MSET ${1:key1} \"${2:value1}\" ${3:key2} \"${4:value2}\""],
+    "description": "Set multiple keys"
+  },
+  "Increment": {
+    "prefix": "incr",
+    "body": ["INCR ${1:key}"],
+    "description": "Increment a key"
+  },
+  "Increment By": {
+    "prefix": "incrby",
+    "body": ["INCRBY ${1:key} ${2:amount}"],
+    "description": "Increment a key by amount"
+  },
+  "Hash Set": {
+    "prefix": "hset",
+    "body": ["HSET ${1:key} ${2:field} \"${3:value}\""],
+    "description": "Set a hash field"
+  },
+  "Hash Get": {
+    "prefix": "hget",
+    "body": ["HGET ${1:key} ${2:field}"],
+    "description": "Get a hash field"
+  },
+  "Hash Get All": {
+    "prefix": "hgetall",
+    "body": ["HGETALL ${1:key}"],
+    "description": "Get all fields of a hash"
+  },
+  "List Push Left": {
+    "prefix": "lpush",
+    "body": ["LPUSH ${1:key} \"${2:value}\""],
+    "description": "Push to the left of a list"
+  },
+  "List Push Right": {
+    "prefix": "rpush",
+    "body": ["RPUSH ${1:key} \"${2:value}\""],
+    "description": "Push to the right of a list"
+  },
+  "List Range": {
+    "prefix": "lrange",
+    "body": ["LRANGE ${1:key} ${2:0} ${3:-1}"],
+    "description": "Get a range from a list"
+  },
+  "List Pop Left": {
+    "prefix": "lpop",
+    "body": ["LPOP ${1:key}"],
+    "description": "Pop from the left of a list"
+  },
+  "Set Add": {
+    "prefix": "sadd",
+    "body": ["SADD ${1:key} \"${2:member}\""],
+    "description": "Add a member to a set"
+  },
+  "Set Members": {
+    "prefix": "smembers",
+    "body": ["SMEMBERS ${1:key}"],
+    "description": "Get all members of a set"
+  },
+  "Set Is Member": {
+    "prefix": "sismember",
+    "body": ["SISMEMBER ${1:key} \"${2:member}\""],
+    "description": "Check if member exists in set"
+  },
+  "Sorted Set Add": {
+    "prefix": "zadd",
+    "body": ["ZADD ${1:key} ${2:score} \"${3:member}\""],
+    "description": "Add a member to a sorted set"
+  },
+  "Sorted Set Range": {
+    "prefix": "zrange",
+    "body": ["ZRANGE ${1:key} ${2:0} ${3:-1} WITHSCORES"],
+    "description": "Get a range from a sorted set"
+  },
+  "Sorted Set Rank": {
+    "prefix": "zrank",
+    "body": ["ZRANK ${1:key} \"${2:member}\""],
+    "description": "Get the rank of a member"
+  },
+  "Stream Add": {
+    "prefix": "xadd",
+    "body": ["XADD ${1:stream} * ${2:field} \"${3:value}\""],
+    "description": "Add an entry to a stream"
+  },
+  "Stream Read": {
+    "prefix": "xread",
+    "body": ["XREAD COUNT ${1:10} STREAMS ${2:stream} ${3:0}"],
+    "description": "Read from a stream"
+  },
+  "Stream Range": {
+    "prefix": "xrange",
+    "body": ["XRANGE ${1:stream} - +"],
+    "description": "Get all entries from a stream"
+  },
+  "Delete Key": {
+    "prefix": "del",
+    "body": ["DEL ${1:key}"],
+    "description": "Delete a key"
+  },
+  "Key Exists": {
+    "prefix": "exists",
+    "body": ["EXISTS ${1:key}"],
+    "description": "Check if key exists"
+  },
+  "Set Expiration": {
+    "prefix": "expire",
+    "body": ["EXPIRE ${1:key} ${2:seconds}"],
+    "description": "Set key expiration"
+  },
+  "Get TTL": {
+    "prefix": "ttl",
+    "body": ["TTL ${1:key}"],
+    "description": "Get time to live"
+  },
+  "Scan Keys": {
+    "prefix": "scan",
+    "body": ["SCAN ${1:0} MATCH ${2:*} COUNT ${3:100}"],
+    "description": "Scan keys with pattern"
+  },
+  "Publish": {
+    "prefix": "publish",
+    "body": ["PUBLISH ${1:channel} \"${2:message}\""],
+    "description": "Publish a message"
+  },
+  "Subscribe": {
+    "prefix": "subscribe",
+    "body": ["SUBSCRIBE ${1:channel}"],
+    "description": "Subscribe to a channel"
+  },
+  "Transaction": {
+    "prefix": "multi",
+    "body": ["MULTI", "${1:// commands}", "EXEC"],
+    "description": "Start a transaction"
+  },
+  "Lua Script": {
+    "prefix": "eval",
+    "body": ["EVAL \"${1:return redis.call('GET', KEYS[1])}\" 1 ${2:key}"],
+    "description": "Execute a Lua script"
+  },
+  "Vector Index Create": {
+    "prefix": "vectorindex",
+    "body": ["VECTOR.INDEX.CREATE ${1:index} DIM ${2:384} DISTANCE ${3:COSINE} TYPE ${4:HNSW}"],
+    "description": "Create a vector index"
+  },
+  "Vector Add": {
+    "prefix": "vectoradd",
+    "body": ["VECTOR.ADD ${1:index} ${2:id} [${3:0.1, 0.2, ...}]"],
+    "description": "Add a vector"
+  },
+  "Vector Search": {
+    "prefix": "vectorsearch",
+    "body": ["VECTOR.SEARCH ${1:index} [${2:0.1, 0.2, ...}] TOP_K ${3:10}"],
+    "description": "Search for similar vectors"
+  },
+  "Time Series Add": {
+    "prefix": "tsadd",
+    "body": ["TS.ADD ${1:key} * ${2:value}"],
+    "description": "Add a time series sample"
+  },
+  "Time Series Range": {
+    "prefix": "tsrange",
+    "body": ["TS.RANGE ${1:key} - + AGGREGATION ${2:avg} ${3:60000}"],
+    "description": "Query time series range"
+  },
+  "Document Insert": {
+    "prefix": "docinsert",
+    "body": ["DOC.INSERT ${1:collection} ${2:id} '{${3:\"field\": \"value\"}}'"],
+    "description": "Insert a document"
+  },
+  "Document Find": {
+    "prefix": "docfind",
+    "body": ["DOC.FIND ${1:collection} '{${2:\"field\": \"value\"}}'"],
+    "description": "Find documents"
+  },
+  "Server Info": {
+    "prefix": "info",
+    "body": ["INFO ${1:all}"],
+    "description": "Get server information"
+  },
+  "Ping": {
+    "prefix": "ping",
+    "body": ["PING"],
+    "description": "Ping the server"
+  },
+  "Select Database": {
+    "prefix": "select",
+    "body": ["SELECT ${1:0}"],
+    "description": "Select a database"
+  },
+  "Flush Database": {
+    "prefix": "flushdb",
+    "body": ["FLUSHDB"],
+    "description": "Flush current database"
+  },
+  "FerriteQL Select": {
+    "prefix": "fql-select",
+    "body": [
+      "QUERY \"SELECT ${1:*} FROM ${2:keys} WHERE ${3:condition} LIMIT ${4:10}\""
+    ],
+    "description": "FerriteQL SELECT query"
+  },
+  "FerriteQL Count": {
+    "prefix": "fql-count",
+    "body": [
+      "QUERY \"SELECT COUNT(*) FROM keys WHERE ${1:type = 'string'}\""
+    ],
+    "description": "FerriteQL COUNT query"
+  },
+  "FerriteQL Delete": {
+    "prefix": "fql-delete",
+    "body": [
+      "QUERY \"DELETE FROM keys WHERE ${1:pattern = 'temp:*'}\""
+    ],
+    "description": "FerriteQL DELETE query"
+  },
+  "FerriteQL Top Keys": {
+    "prefix": "fql-topkeys",
+    "body": [
+      "QUERY \"SELECT key, size FROM keys ORDER BY size DESC LIMIT ${1:20}\""
+    ],
+    "description": "FerriteQL find largest keys"
+  },
+  "FerriteQL Expiring": {
+    "prefix": "fql-expiring",
+    "body": [
+      "QUERY \"SELECT key, ttl FROM keys WHERE ttl BETWEEN 0 AND ${1:60} ORDER BY ttl ASC\""
+    ],
+    "description": "FerriteQL find expiring keys"
+  },
+  "Vector Create Index": {
+    "prefix": "vec-create",
+    "body": [
+      "VECTOR.CREATE ${1:index_name} DIM ${2:384} DISTANCE ${3|cosine,euclidean,dot|}"
+    ],
+    "description": "Create a vector search index"
+  },
+  "Vector Similarity Search": {
+    "prefix": "vec-search",
+    "body": [
+      "VECTOR.SEARCH ${1:index_name} [${2:0.1, 0.2, ...}] TOP ${3:10}"
+    ],
+    "description": "Search vectors by similarity"
+  },
+  "Semantic Cache Set": {
+    "prefix": "sem-set",
+    "body": [
+      "SEMANTIC.SET \"${1:query}\" \"${2:response}\" TTL ${3:3600}"
+    ],
+    "description": "Cache a semantic query-response pair"
+  },
+  "Semantic Cache Get": {
+    "prefix": "sem-get",
+    "body": [
+      "SEMANTIC.GET \"${1:query}\" ${2:0.85}"
+    ],
+    "description": "Search semantic cache by similarity"
+  },
+  "Time Travel History": {
+    "prefix": "history",
+    "body": [
+      "HISTORY ${1:key} SINCE ${2:-24h}"
+    ],
+    "description": "View key version history"
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "Ferrite Client Setup": {
+    "prefix": "ferrite-client",
+    "body": [
+      "use ferrite::Client;",
+      "",
+      "let client = Client::connect(\"${1:ferrite://localhost:6379}\").await?;",
+      "$0"
+    ],
+    "description": "Create a Ferrite client"
+  },
+  "Ferrite Connection Pool": {
+    "prefix": "ferrite-pool",
+    "body": [
+      "use ferrite::{Pool, PoolConfig};",
+      "",
+      "let pool = Pool::new(PoolConfig {",
+      "    url: \"${1:ferrite://localhost:6379}\".into(),",
+      "    max_size: ${2:10},",
+      "    ..Default::default()",
+      "})?;",
+      "",
+      "let mut conn = pool.get().await?;",
+      "$0"
+    ],
+    "description": "Create a connection pool"
+  },
+  "Ferrite Get": {
+    "prefix": "ferrite-get",
+    "body": ["let ${1:value}: Option<String> = client.get(\"${2:key}\").await?;"],
+    "description": "Get a value"
+  },
+  "Ferrite Set": {
+    "prefix": "ferrite-set",
+    "body": ["client.set(\"${1:key}\", \"${2:value}\").await?;"],
+    "description": "Set a value"
+  },
+  "Ferrite Set with Expiration": {
+    "prefix": "ferrite-setex",
+    "body": ["client.set_ex(\"${1:key}\", \"${2:value}\", ${3:3600}).await?;"],
+    "description": "Set a value with expiration"
+  },
+  "Ferrite Hash Set": {
+    "prefix": "ferrite-hset",
+    "body": [
+      "client.hset(",
+      "    \"${1:key}\",",
+      "    &[(\"${2:field}\", \"${3:value}\")],",
+      ").await?;"
+    ],
+    "description": "Set hash fields"
+  },
+  "Ferrite Hash Get All": {
+    "prefix": "ferrite-hgetall",
+    "body": ["let ${1:data}: HashMap<String, String> = client.hgetall(\"${2:key}\").await?;"],
+    "description": "Get all hash fields"
+  },
+  "Ferrite List Push": {
+    "prefix": "ferrite-lpush",
+    "body": ["client.lpush(\"${1:key}\", &[\"${2:value}\"]).await?;"],
+    "description": "Push to list"
+  },
+  "Ferrite List Range": {
+    "prefix": "ferrite-lrange",
+    "body": ["let ${1:items}: Vec<String> = client.lrange(\"${2:key}\", 0, -1).await?;"],
+    "description": "Get list range"
+  },
+  "Ferrite Pipeline": {
+    "prefix": "ferrite-pipeline",
+    "body": [
+      "let results = ferrite::pipe()",
+      "    .set(\"${1:key1}\", \"${2:value1}\")",
+      "    .get(\"${3:key2}\")",
+      "    .query_async(&mut client)",
+      "    .await?;"
+    ],
+    "description": "Execute pipeline"
+  },
+  "Ferrite Pub/Sub Subscribe": {
+    "prefix": "ferrite-subscribe",
+    "body": [
+      "let mut pubsub = client.get_async_pubsub().await?;",
+      "pubsub.subscribe(\"${1:channel}\").await?;",
+      "",
+      "while let Some(msg) = pubsub.on_message().next().await {",
+      "    let payload: String = msg.get_payload()?;",
+      "    println!(\"{}\", payload);",
+      "}"
+    ],
+    "description": "Subscribe to channel"
+  },
+  "Ferrite Transaction": {
+    "prefix": "ferrite-transaction",
+    "body": [
+      "ferrite::transaction(&mut client, &[\"${1:key}\"], |pipe| {",
+      "    let value: Option<String> = client.get(\"${1:key}\")?;",
+      "    pipe.set(\"${1:key}\", ${2:new_value}).ignore()",
+      "}).await?;"
+    ],
+    "description": "Execute transaction"
+  },
+  "Ferrite Command": {
+    "prefix": "ferrite-cmd",
+    "body": [
+      "let ${1:result}: ${2:i64} = ferrite::cmd(\"${3:COMMAND}\")",
+      "    .arg(\"${4:arg}\")",
+      "    .query_async(&mut client)",
+      "    .await?;"
+    ],
+    "description": "Execute raw command"
+  },
+  "Ferrite Vector Search": {
+    "prefix": "ferrite-vector-search",
+    "body": [
+      "let results: Vec<(String, f64)> = ferrite::cmd(\"VECTOR.SEARCH\")",
+      "    .arg(\"${1:index}\")",
+      "    .arg(serde_json::to_string(&${2:embedding})?)",
+      "    .arg(\"TOP_K\")",
+      "    .arg(${3:10})",
+      "    .query_async(&mut client)",
+      "    .await?;"
+    ],
+    "description": "Vector similarity search"
+  },
+  "Ferrite Derive Model": {
+    "prefix": "ferrite-model",
+    "body": [
+      "#[derive(Debug, Serialize, Deserialize, FerriteModel)]",
+      "#[ferrite(prefix = \"${1:model}\")]",
+      "struct ${2:Model} {",
+      "    #[ferrite(id)]",
+      "    id: String,",
+      "    ${3:field}: ${4:String},",
+      "}"
+    ],
+    "description": "Derive a Ferrite model"
+  }
+}

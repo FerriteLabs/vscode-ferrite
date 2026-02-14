@@ -1,0 +1,140 @@
+{
+  "Ferrite Client Setup": {
+    "prefix": "ferrite-client",
+    "body": [
+      "import { createClient } from 'ferrite';",
+      "",
+      "const client = createClient({",
+      "  host: '${1:localhost}',",
+      "  port: ${2:6379},",
+      "});",
+      "",
+      "await client.connect();",
+      "$0"
+    ],
+    "description": "Create a Ferrite client"
+  },
+  "Ferrite Get": {
+    "prefix": "ferrite-get",
+    "body": ["const ${1:value} = await client.get('${2:key}');"],
+    "description": "Get a value"
+  },
+  "Ferrite Set": {
+    "prefix": "ferrite-set",
+    "body": ["await client.set('${1:key}', '${2:value}');"],
+    "description": "Set a value"
+  },
+  "Ferrite Set with Expiration": {
+    "prefix": "ferrite-setex",
+    "body": ["await client.set('${1:key}', '${2:value}', { EX: ${3:3600} });"],
+    "description": "Set a value with expiration"
+  },
+  "Ferrite Hash Set": {
+    "prefix": "ferrite-hset",
+    "body": [
+      "await client.hSet('${1:key}', {",
+      "  ${2:field}: '${3:value}',",
+      "});"
+    ],
+    "description": "Set hash fields"
+  },
+  "Ferrite Hash Get All": {
+    "prefix": "ferrite-hgetall",
+    "body": ["const ${1:hash} = await client.hGetAll('${2:key}');"],
+    "description": "Get all hash fields"
+  },
+  "Ferrite List Push": {
+    "prefix": "ferrite-lpush",
+    "body": ["await client.lPush('${1:key}', '${2:value}');"],
+    "description": "Push to list"
+  },
+  "Ferrite List Range": {
+    "prefix": "ferrite-lrange",
+    "body": ["const ${1:items} = await client.lRange('${2:key}', 0, -1);"],
+    "description": "Get list range"
+  },
+  "Ferrite Set Add": {
+    "prefix": "ferrite-sadd",
+    "body": ["await client.sAdd('${1:key}', '${2:member}');"],
+    "description": "Add to set"
+  },
+  "Ferrite Sorted Set Add": {
+    "prefix": "ferrite-zadd",
+    "body": ["await client.zAdd('${1:key}', { score: ${2:1}, value: '${3:member}' });"],
+    "description": "Add to sorted set"
+  },
+  "Ferrite Pipeline": {
+    "prefix": "ferrite-pipeline",
+    "body": [
+      "const results = await client",
+      "  .multi()",
+      "  .set('${1:key1}', '${2:value1}')",
+      "  .get('${3:key2}')",
+      "  .exec();"
+    ],
+    "description": "Execute pipeline"
+  },
+  "Ferrite Pub/Sub Subscribe": {
+    "prefix": "ferrite-subscribe",
+    "body": [
+      "const subscriber = client.duplicate();",
+      "await subscriber.connect();",
+      "",
+      "await subscriber.subscribe('${1:channel}', (message) => {",
+      "  console.log(message);",
+      "});"
+    ],
+    "description": "Subscribe to channel"
+  },
+  "Ferrite Pub/Sub Publish": {
+    "prefix": "ferrite-publish",
+    "body": ["await client.publish('${1:channel}', '${2:message}');"],
+    "description": "Publish to channel"
+  },
+  "Ferrite Transaction": {
+    "prefix": "ferrite-transaction",
+    "body": [
+      "await client.watch('${1:key}');",
+      "const value = await client.get('${1:key}');",
+      "",
+      "const multi = client.multi();",
+      "multi.set('${1:key}', ${2:newValue});",
+      "",
+      "try {",
+      "  await multi.exec();",
+      "} catch (err) {",
+      "  // Transaction was aborted",
+      "}"
+    ],
+    "description": "Execute transaction with watch"
+  },
+  "Ferrite Vector Search": {
+    "prefix": "ferrite-vector-search",
+    "body": [
+      "const results = await client.sendCommand([",
+      "  'VECTOR.SEARCH',",
+      "  '${1:index}',",
+      "  JSON.stringify(${2:embedding}),",
+      "  'TOP_K',",
+      "  '${3:10}'",
+      "]);"
+    ],
+    "description": "Vector similarity search"
+  },
+  "Ferrite Cache Pattern": {
+    "prefix": "ferrite-cache",
+    "body": [
+      "async function getCached<T>(key: string, fetch: () => Promise<T>, ttl = 3600): Promise<T> {",
+      "  const cached = await client.get(key);",
+      "  if (cached) {",
+      "    return JSON.parse(cached);",
+      "  }",
+      "",
+      "  const value = await fetch();",
+      "  await client.set(key, JSON.stringify(value), { EX: ttl });",
+      "  return value;",
+      "}"
+    ],
+    "description": "Cache-aside pattern"
+  }
+}
