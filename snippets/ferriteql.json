@@ -156,7 +156,11 @@
   },
   "Transaction": {
     "prefix": "multi",
-    "body": ["MULTI", "${1:// commands}", "EXEC"],
+    "body": [
+      "MULTI",
+      "${1:// commands}",
+      "EXEC"
+    ],
     "description": "Start a transaction"
   },
   "Lua Script": {
