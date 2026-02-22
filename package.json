@@ -142,6 +142,16 @@
       {
         "command": "ferrite.inspectKey",
         "title": "Ferrite: Inspect Key"
+      },
+      {
+        "command": "ferrite.clusterInfo",
+        "title": "Ferrite: Show Cluster Info",
+        "icon": "$(server-environment)"
+      },
+      {
+        "command": "ferrite.clusterNodes",
+        "title": "Ferrite: Show Cluster Nodes",
+        "icon": "$(server-process)"
       }
     ],
     "keybindings": [
