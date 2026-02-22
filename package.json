@@ -37,6 +37,7 @@
     "onLanguage:ferrite",
     "onLanguage:ferriteql",
     "onCommand:ferrite.connect",
+    "onCommand:ferrite.inspectKey",
     "workspaceContains:**/ferrite.toml"
   ],
   "main": "./out/extension.js",
