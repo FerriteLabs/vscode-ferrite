@@ -168,6 +168,17 @@ Configure via VS Code Settings (`Ctrl+,`):
 }
 ```
 
+### Environment Variables
+
+You can also configure connections via environment variables:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `FERRITE_HOST` | Server hostname | `localhost` |
+| `FERRITE_PORT` | Server port | `6379` |
+| `FERRITE_PASSWORD` | Auth password | — |
+| `FERRITE_TLS` | Enable TLS | `false` |
+
 ### Connection Options
 
 | Option | Type | Description |
