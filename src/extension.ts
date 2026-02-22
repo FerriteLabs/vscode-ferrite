@@ -209,6 +209,12 @@ async function connect() {
             db: connectionConfig.database || 0,
             lazyConnect: true,
             connectTimeout: 5000,
+            retryStrategy(times: number) {
+                if (times > 3) {
+                    return null;
+                }
+                return Math.min(times * 200, 2000);
+            },
         });
 
         await client.connect();
