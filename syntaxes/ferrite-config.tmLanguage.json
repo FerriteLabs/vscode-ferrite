@@ -3,13 +3,30 @@
   "name": "Ferrite Config",
   "scopeName": "source.ferrite-config",
   "patterns": [
-    { "include": "#comments" },
-    { "include": "#sections" },
-    { "include": "#keys" },
-    { "include": "#strings" },
-    { "include": "#numbers" },
-    { "include": "#booleans" },
-    { "include": "#arrays" }
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#sections"
+    },
+    {
+      "include": "#keys"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#booleans"
+    },
+    {
+      "include": "#arrays"
+    },
+    {
+      "include": "#directives"
+    }
   ],
   "repository": {
     "comments": {
@@ -26,14 +43,18 @@
           "name": "entity.name.section.ferrite-config",
           "match": "^\\s*\\[([a-zA-Z0-9_.-]+)\\]",
           "captures": {
-            "1": { "name": "entity.name.section.ferrite-config" }
+            "1": {
+              "name": "entity.name.section.ferrite-config"
+            }
           }
         },
         {
           "name": "entity.name.section.array.ferrite-config",
           "match": "^\\s*\\[\\[([a-zA-Z0-9_.-]+)\\]\\]",
           "captures": {
-            "1": { "name": "entity.name.section.array.ferrite-config" }
+            "1": {
+              "name": "entity.name.section.array.ferrite-config"
+            }
           }
         }
       ]
@@ -44,7 +65,9 @@
           "name": "variable.other.key.ferrite-config",
           "match": "^\\s*([a-zA-Z0-9_-]+)\\s*=",
           "captures": {
-            "1": { "name": "variable.other.key.ferrite-config" }
+            "1": {
+              "name": "variable.other.key.ferrite-config"
+            }
           }
         }
       ]
@@ -113,10 +136,38 @@
           "begin": "\\[",
           "end": "\\]",
           "patterns": [
-            { "include": "#strings" },
-            { "include": "#numbers" },
-            { "include": "#booleans" }
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "include": "#booleans"
+            }
           ]
+        }
+      ]
+    },
+    "directives": {
+      "patterns": [
+        {
+          "name": "keyword.control.directive.ferrite-config",
+          "match": "^\\s*(@include|@import)\\s+",
+          "captures": {
+            "1": {
+              "name": "keyword.control.directive.ferrite-config"
+            }
+          }
+        },
+        {
+          "name": "keyword.control.directive.env.ferrite-config",
+          "match": "\\$\\{([A-Z_][A-Z0-9_]*)\\}",
+          "captures": {
+            "1": {
+              "name": "variable.other.env.ferrite-config"
+            }
+          }
         }
       ]
     }
