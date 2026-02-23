@@ -38,21 +38,33 @@
     "onLanguage:ferriteql",
     "onCommand:ferrite.connect",
     "onCommand:ferrite.inspectKey",
-    "workspaceContains:**/ferrite.toml"
+    "workspaceContains:**/ferrite.toml",
+    "workspaceContains:**/.ferrite",
+    "onLanguage:ferrite-config"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "languages": [
       {
         "id": "ferriteql",
-        "aliases": ["FerriteQL", "ferriteql"],
-        "extensions": [".fql", ".ferriteql"],
+        "aliases": [
+          "FerriteQL",
+          "ferriteql"
+        ],
+        "extensions": [
+          ".fql",
+          ".ferriteql"
+        ],
         "configuration": "./language-configuration.json"
       },
       {
         "id": "ferrite-config",
-        "aliases": ["Ferrite Config"],
-        "filenames": ["ferrite.toml"],
+        "aliases": [
+          "Ferrite Config"
+        ],
+        "filenames": [
+          "ferrite.toml"
+        ],
         "configuration": "./language-configuration.json"
       }
     ],
@@ -271,7 +283,11 @@
         },
         "ferrite.outputFormat": {
           "type": "string",
-          "enum": ["json", "table", "raw"],
+          "enum": [
+            "json",
+            "table",
+            "raw"
+          ],
           "default": "json",
           "description": "Output format for command results"
         },
