@@ -1,5 +1,10 @@
 # Ferrite for Visual Studio Code
 
+[![CI](https://github.com/ferritelabs/vscode-ferrite/actions/workflows/ci.yml/badge.svg)](https://github.com/ferritelabs/vscode-ferrite/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
+[![VS Code Marketplace](https://img.shields.io/badge/VS%20Code-Marketplace-007ACC)](https://marketplace.visualstudio.com/items?itemName=ferritelabs.ferrite)
+[![VS Code Engine](https://img.shields.io/badge/vscode-%5E1.85.0-blue)](https://code.visualstudio.com/)
+
 Official VS Code extension for [Ferrite](https://ferrite.dev) - a high-performance, tiered-storage key-value store.
 
 ## Features
