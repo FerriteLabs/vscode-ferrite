@@ -3,12 +3,16 @@ import Redis from 'ioredis';
 import { KeysTreeProvider } from './providers/keysTreeProvider';
 import { ServerInfoTreeProvider } from './providers/serverInfoTreeProvider';
 import { FerriteQLCompletionProvider } from './ferriteql-completions';
+import { ConnectionManager } from './connectionManager';
 
 let client: Redis | null = null;
 let outputChannel: vscode.OutputChannel;
 let statusBarItem: vscode.StatusBarItem;
 let keysTreeProvider: KeysTreeProvider;
 let serverInfoProvider: ServerInfoTreeProvider;
+
+// Connection manager extracted for better modularity and testability
+const connectionManager = new ConnectionManager();
 
 export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel('Ferrite');
