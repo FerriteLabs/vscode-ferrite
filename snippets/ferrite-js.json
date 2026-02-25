@@ -94,11 +94,12 @@
   "Ferrite Transaction": {
     "prefix": "ferrite-transaction",
     "body": [
-      "await client.watch('${1:key}');",
-      "const value = await client.get('${1:key}');",
+      "const watchKey = '${1:key}';",
+      "await client.watch(watchKey);",
+      "const value = await client.get(watchKey);",
       "",
       "const multi = client.multi();",
-      "multi.set('${1:key}', ${2:newValue});",
+      "multi.set(watchKey, ${2:newValue});",
       "",
       "try {",
       "  await multi.exec();",
