@@ -17,6 +17,12 @@ let serverInfoProvider: ServerInfoTreeProvider;
 // Connection manager extracted for better modularity and testability
 const connectionManager = new ConnectionManager();
 
+// Status bar configuration for connected server info display
+const STATUS_BAR_PRIORITY = 100;
+const STATUS_BAR_CONNECTED_ICON = '$(database)';
+const STATUS_BAR_DISCONNECTED_ICON = '$(debug-disconnect)';
+const STATUS_BAR_REFRESH_INTERVAL_MS = 30000;
+
 export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel('Ferrite');
 
@@ -146,14 +152,20 @@ async function inspectKey(key: string) {
     }
 }
 
-// Update status bar
+// Update status bar with connected server information
 function updateStatusBar(connected: boolean, info?: string) {
     if (connected) {
-        statusBarItem.text = `$(database) Ferrite: ${info || 'Connected'}`;
-        statusBarItem.tooltip = 'Connected to Ferrite server';
+        statusBarItem.text = `${STATUS_BAR_CONNECTED_ICON} Ferrite: ${info || 'Connected'}`;
+        statusBarItem.tooltip = new vscode.MarkdownString(
+            `**Ferrite Server**
+
+Host: ${info || 'unknown'}
+
+Click to manage connection`
+        );
         statusBarItem.backgroundColor = undefined;
     } else {
-        statusBarItem.text = '$(database) Ferrite: Disconnected';
+        statusBarItem.text = `${STATUS_BAR_DISCONNECTED_ICON} Ferrite: Disconnected`;
         statusBarItem.tooltip = 'Click to connect to Ferrite';
         statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
     }
