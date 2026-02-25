@@ -1,1 +1,11 @@
+# Default owners for everything
 * @josedab
+
+# Extension source
+/src/ @josedab
+/syntaxes/ @josedab
+/snippets/ @josedab
+
+# CI/CD and infrastructure
+/.github/ @josedab
+/package.json @josedab
