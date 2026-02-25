@@ -170,6 +170,13 @@
           "captures": {
             "1": { "name": "support.function.crdt.ferriteql" }
           }
+        },
+        {
+          "name": "keyword.control.cluster.ferriteql",
+          "match": "\\b(CLUSTER\\s+INFO|CLUSTER\\s+NODES|CLUSTER\\s+MEET|CLUSTER\\s+FORGET|CLUSTER\\s+REPLICATE|CLUSTER\\s+SAVECONFIG|CLUSTER\\s+ADDSLOTS|CLUSTER\\s+DELSLOTS|CLUSTER\\s+FLUSHSLOTS|CLUSTER\\s+SETSLOT|CLUSTER\\s+KEYSLOT|CLUSTER\\s+COUNTKEYSINSLOT|CLUSTER\\s+GETKEYSINSLOT|CLUSTER\\s+FAILOVER|CLUSTER\\s+RESET|CLUSTER\\s+MYID|CLUSTER\\s+SLOTS|CLUSTER\\s+SHARDS|CLUSTER\\s+LINKS)\\b",
+          "captures": {
+            "1": { "name": "support.function.cluster.ferriteql" }
+          }
         }
       ]
     },
