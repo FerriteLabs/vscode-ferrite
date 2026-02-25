@@ -1,9 +1,12 @@
-import * as vscode from 'vscode';
+// External dependencies (sorted alphabetically)
 import Redis from 'ioredis';
+import * as vscode from 'vscode';
+
+// Local modules (sorted alphabetically)
+import { ConnectionManager } from './connectionManager';
+import { FerriteQLCompletionProvider } from './ferriteql-completions';
 import { KeysTreeProvider } from './providers/keysTreeProvider';
 import { ServerInfoTreeProvider } from './providers/serverInfoTreeProvider';
-import { FerriteQLCompletionProvider } from './ferriteql-completions';
-import { ConnectionManager } from './connectionManager';
 
 let client: Redis | null = null;
 let outputChannel: vscode.OutputChannel;
