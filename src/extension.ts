@@ -392,7 +392,9 @@ export function parseCommand(cmd: string): string[] {
     let quoteChar = '';
     let escape = false;
 
-    for (const char of cmd) {
+    for (let i = 0; i < cmd.length; i++) {
+        const char = cmd[i];
+
         if (escape) {
             current += char;
             escape = false;
@@ -405,6 +407,12 @@ export function parseCommand(cmd: string): string[] {
         }
 
         if ((char === '"' || char === "'") && !inQuote) {
+            // Handle case where quote immediately follows a token (e.g., key"value")
+            // by splitting the current token first
+            if (current) {
+                parts.push(current);
+                current = '';
+            }
             inQuote = true;
             quoteChar = char;
             continue;
