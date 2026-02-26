@@ -21,7 +21,16 @@ const connectionManager = new ConnectionManager();
 const STATUS_BAR_PRIORITY = 100;
 const STATUS_BAR_CONNECTED_ICON = '$(database)';
 const STATUS_BAR_DISCONNECTED_ICON = '$(debug-disconnect)';
+const STATUS_BAR_CONNECTING_ICON = '$(sync~spin)';
 const STATUS_BAR_REFRESH_INTERVAL_MS = 30000;
+
+// Connection state enum for status bar indicator
+enum ConnectionState {
+    Disconnected = 'disconnected',
+    Connecting = 'connecting',
+    Connected = 'connected',
+    Error = 'error',
+}
 
 export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel('Ferrite');
@@ -152,22 +161,34 @@ async function inspectKey(key: string) {
     }
 }
 
-// Update status bar with connected server information
-function updateStatusBar(connected: boolean, info?: string) {
-    if (connected) {
-        statusBarItem.text = `${STATUS_BAR_CONNECTED_ICON} Ferrite: ${info || 'Connected'}`;
-        statusBarItem.tooltip = new vscode.MarkdownString(
-            `**Ferrite Server**
+// Update status bar with connection state indicator
+function updateStatusBar(connected: boolean, info?: string, state?: ConnectionState) {
+    const connectionState = state || (connected ? ConnectionState.Connected : ConnectionState.Disconnected);
 
-Host: ${info || 'unknown'}
-
-Click to manage connection`
-        );
-        statusBarItem.backgroundColor = undefined;
-    } else {
-        statusBarItem.text = `${STATUS_BAR_DISCONNECTED_ICON} Ferrite: Disconnected`;
-        statusBarItem.tooltip = 'Click to connect to Ferrite';
-        statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
+    switch (connectionState) {
+        case ConnectionState.Connected:
+            statusBarItem.text = `${STATUS_BAR_CONNECTED_ICON} Ferrite: ${info || 'Connected'}`;
+            statusBarItem.tooltip = new vscode.MarkdownString(
+                `**Ferrite Server**\n\nHost: ${info || 'unknown'}\n\nStatus: Connected\n\nClick to manage connection`
+            );
+            statusBarItem.backgroundColor = undefined;
+            break;
+        case ConnectionState.Connecting:
+            statusBarItem.text = `${STATUS_BAR_CONNECTING_ICON} Ferrite: Connecting...`;
+            statusBarItem.tooltip = 'Establishing connection to Ferrite server';
+            statusBarItem.backgroundColor = undefined;
+            break;
+        case ConnectionState.Error:
+            statusBarItem.text = `${STATUS_BAR_DISCONNECTED_ICON} Ferrite: Error`;
+            statusBarItem.tooltip = 'Connection error - click to reconnect';
+            statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.errorBackground');
+            break;
+        case ConnectionState.Disconnected:
+        default:
+            statusBarItem.text = `${STATUS_BAR_DISCONNECTED_ICON} Ferrite: Disconnected`;
+            statusBarItem.tooltip = 'Click to connect to Ferrite';
+            statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
+            break;
     }
 }
 
