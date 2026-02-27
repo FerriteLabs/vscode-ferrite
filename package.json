@@ -310,20 +310,20 @@
     "publish": "vsce publish"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.6",
-    "@types/node": "^20.10.0",
-    "@types/vscode": "^1.85.0",
-    "@typescript-eslint/eslint-plugin": "^6.13.0",
-    "@typescript-eslint/parser": "^6.13.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.12.0",
+    "@types/vscode": "^1.96.0",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
     "@vscode/test-electron": "^2.4.1",
-    "@vscode/vsce": "^2.24.0",
-    "eslint": "^8.55.0",
-    "glob": "^10.3.10",
-    "mocha": "^10.2.0",
-    "typescript": "^5.3.2",
-    "esbuild": "^0.20.1"
+    "@vscode/vsce": "^3.2.0",
+    "eslint": "^9.17.0",
+    "glob": "^11.0.1",
+    "mocha": "^11.1.0",
+    "typescript": "^5.7.3",
+    "esbuild": "^0.24.2"
   },
   "dependencies": {
-    "ioredis": "^5.3.2"
+    "ioredis": "^5.4.2"
   }
 }
