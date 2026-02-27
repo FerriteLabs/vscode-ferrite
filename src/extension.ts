@@ -15,6 +15,7 @@ let keysTreeProvider: KeysTreeProvider;
 let serverInfoProvider: ServerInfoTreeProvider;
 
 // Connection manager extracted for better modularity and testability
+// Protocol parsing is delegated to parseCommand() utility
 const connectionManager = new ConnectionManager();
 
 // Status bar configuration for connected server info display
