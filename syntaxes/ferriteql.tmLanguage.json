@@ -1,6 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "name": "FerriteQL",
+  "version": "1.0.1",
   "scopeName": "source.ferriteql",
   "patterns": [
     { "include": "#comments" },
