@@ -710,7 +710,7 @@ export class FerriteHoverProvider implements vscode.HoverProvider {
         'GET': { syntax: 'GET key', description: 'Get the value of a key. Returns nil if the key does not exist.' },
         'SET': { syntax: 'SET key value [EX seconds] [PX ms] [NX|XX]', description: 'Set key to hold the string value. EX sets expiry in seconds, PX in milliseconds. NX only sets if key does not exist, XX only if it exists.' },
         'DEL': { syntax: 'DEL key [key ...]', description: 'Removes the specified keys. Returns the number of keys removed.' },
-        'HSET': { syntax: 'HSET key field value [field value ...]', description: 'Sets field in the hash stored at key to value. Returns the number of fields added.' },
+        'HSET': { syntax: 'HSET key field value [field value ...] [field value ...]', description: 'Sets field in the hash stored at key to value. Returns the number of fields added.' },
         'LPUSH': { syntax: 'LPUSH key value [value ...]', description: 'Insert values at the head of the list. Returns the length of the list after the push.' },
         'ZADD': { syntax: 'ZADD key [NX|XX] [GT|LT] [CH] score member [score member ...]', description: 'Adds members with scores to a sorted set. Returns the number of elements added.' },
         'XADD': { syntax: 'XADD key [NOMKSTREAM] [MAXLEN|MINID [=|~] threshold] *|id field value [field value ...]', description: 'Appends an entry to a stream. Returns the ID of the added entry.' },
