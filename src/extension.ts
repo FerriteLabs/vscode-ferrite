@@ -23,7 +23,7 @@ const STATUS_BAR_PRIORITY = 100;
 const STATUS_BAR_CONNECTED_ICON = '$(database)';
 const STATUS_BAR_DISCONNECTED_ICON = '$(debug-disconnect)';
 const STATUS_BAR_CONNECTING_ICON = '$(sync~spin)';
-const STATUS_BAR_REFRESH_INTERVAL_MS = 30000;
+const STATUS_BAR_REFRESH_INTERVAL_MS = 15000;
 
 // Connection state enum for status bar indicator
 enum ConnectionState {
