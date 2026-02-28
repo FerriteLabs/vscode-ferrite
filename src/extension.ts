@@ -19,7 +19,7 @@ let serverInfoProvider: ServerInfoTreeProvider;
 const connectionManager = new ConnectionManager();
 
 // Status bar configuration for connected server info display
-const STATUS_BAR_PRIORITY = 100;
+const STATUS_BAR_PRIORITY = 200;
 const STATUS_BAR_CONNECTED_ICON = '$(database)';
 const STATUS_BAR_DISCONNECTED_ICON = '$(debug-disconnect)';
 const STATUS_BAR_CONNECTING_ICON = '$(sync~spin)';
