@@ -14,7 +14,7 @@
     "url": "https://github.com/ferritelabs/vscode-ferrite/issues"
   },
   "engines": {
-    "vscode": "^1.85.0"
+    "vscode": "^1.86.0"
   },
   "categories": [
     "Programming Languages",
