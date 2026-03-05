@@ -281,6 +281,18 @@ Contributions are welcome! Please see [CONTRIBUTING.md](https://github.com/ferri
 
 Apache 2.0 - See [LICENSE](https://github.com/ferritelabs/ferrite/blob/main/LICENSE) for details.
 
+## 🌐 FerriteLabs Ecosystem
+
+| Repository | Description |
+|-----------|-------------|
+| [ferrite](https://github.com/ferritelabs/ferrite) | Core database engine (Rust, 12 crates) |
+| [ferrite-docs](https://github.com/ferritelabs/ferrite-docs) | Documentation website |
+| [ferrite-ops](https://github.com/ferritelabs/ferrite-ops) | Docker, Helm, Grafana, packaging |
+| [ferrite-bench](https://github.com/ferritelabs/ferrite-bench) | Performance benchmarks |
+| **vscode-ferrite** | 📍 You are here |
+| [jetbrains-ferrite](https://github.com/ferritelabs/jetbrains-ferrite) | JetBrains IDE plugin |
+| [homebrew-tap](https://github.com/ferritelabs/homebrew-tap) | Homebrew formula |
+
 ## Resources
 
 - [Ferrite Documentation](https://ferrite.dev/docs)
