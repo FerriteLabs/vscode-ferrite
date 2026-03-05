@@ -297,6 +297,32 @@
           "type": "boolean",
           "default": true,
           "description": "Validate ferrite.toml on save"
+        },
+        "ferrite.connectTimeout": {
+          "type": "number",
+          "default": 5000,
+          "minimum": 1000,
+          "maximum": 60000,
+          "description": "Connection timeout in milliseconds"
+        },
+        "ferrite.maxRetries": {
+          "type": "number",
+          "default": 3,
+          "minimum": 0,
+          "maximum": 20,
+          "description": "Maximum connection retry attempts before giving up"
+        },
+        "ferrite.autoReconnect": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically reconnect when connection is lost"
+        },
+        "ferrite.heartbeatInterval": {
+          "type": "number",
+          "default": 30000,
+          "minimum": 0,
+          "maximum": 300000,
+          "description": "Heartbeat interval in milliseconds (0 to disable). Sends PING to detect stale connections."
         }
       }
     }
