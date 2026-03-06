@@ -35,7 +35,7 @@ export class ConnectionManager {
     private getConfig() {
         const config = vscode.workspace.getConfiguration('ferrite');
         return {
-            connectTimeout: config.get<number>('connectTimeout', 5000),
+            connectTimeout: config.get<number>('connectTimeout', 10000),
             maxRetries: config.get<number>('maxRetries', 3),
             autoReconnect: config.get<boolean>('autoReconnect', true),
             heartbeatInterval: config.get<number>('heartbeatInterval', 30000),
