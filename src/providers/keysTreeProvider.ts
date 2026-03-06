@@ -9,7 +9,14 @@ export class KeysTreeProvider implements vscode.TreeDataProvider<KeyItem> {
     private _onDidChangeTreeData = new vscode.EventEmitter<KeyItem | undefined>();
     readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
+    private filterPattern: string = '*';
+
     constructor(private getClient: () => Redis | null) {}
+
+    setFilter(pattern: string): void {
+        this.filterPattern = pattern || '*';
+        this.refresh();
+    }
 
     refresh(): void {
         this._onDidChangeTreeData.fire(undefined);
@@ -28,7 +35,7 @@ export class KeysTreeProvider implements vscode.TreeDataProvider<KeyItem> {
         try {
             if (!element) {
                 // Root level: show namespaces (prefixes) and ungrouped keys
-                const keys = await this.scanKeys(client, '*', 500);
+                const keys = await this.scanKeys(client, this.filterPattern, 500);
                 return this.groupByPrefix(keys);
             }
 
