@@ -75,6 +75,7 @@ export class ConnectionManager {
         this.client.on('close', () => {
             this.outputChannel.appendLine(`[${new Date().toISOString()}] Connection closed`);
             this.stopHeartbeat();
+            this._onDidDisconnect.fire();
             if (settings.autoReconnect && this.lastConfig && !this.reconnecting) {
                 this.attemptReconnect();
             }
