@@ -13,7 +13,7 @@ export class ConnectionManager {
     private readonly outputChannel: vscode.OutputChannel;
 
     private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
-    private lastConfig: { host: string; port: number; password?: string; database?: number } | null = null;
+    private lastConfig: { host: string; port: number; password?: string; database?: number; tls?: boolean } | null = null;
     private reconnecting = false;
 
     readonly onDidConnect = this._onDidConnect.event;
@@ -42,7 +42,7 @@ export class ConnectionManager {
         };
     }
 
-    async connect(config: { host: string; port: number; password?: string; database?: number }): Promise<Redis> {
+    async connect(config: { host: string; port: number; password?: string; database?: number; tls?: boolean }): Promise<Redis> {
         if (this.client) {
             await this.disconnect();
         }
@@ -50,7 +50,7 @@ export class ConnectionManager {
         this.lastConfig = config;
         const settings = this.getConfig();
 
-        this.client = new Redis({
+        const redisOptions: any = {
             host: config.host,
             port: config.port,
             password: config.password,
@@ -66,7 +66,17 @@ export class ConnectionManager {
                 this.outputChannel.appendLine(`[${new Date().toISOString()}] Retry ${times}/${settings.maxRetries} in ${delay}ms`);
                 return delay;
             },
-        });
+        };
+
+        // Enable TLS if configured
+        if (config.tls) {
+            redisOptions.tls = {
+                rejectUnauthorized: false,
+            };
+            this.outputChannel.appendLine(`[${new Date().toISOString()}] TLS enabled for connection`);
+        }
+
+        this.client = new Redis(redisOptions);
 
         this.client.on('error', (err) => {
             this.outputChannel.appendLine(`[${new Date().toISOString()}] Connection error: ${err.message}`);

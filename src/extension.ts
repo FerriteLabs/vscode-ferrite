@@ -64,6 +64,8 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('ferrite.refreshKeys', () => keysTreeProvider.refresh()),
         vscode.commands.registerCommand('ferrite.refreshInfo', () => serverInfoProvider.refresh()),
         vscode.commands.registerCommand('ferrite.inspectKey', inspectKey),
+        vscode.commands.registerCommand('ferrite.clusterInfo', clusterInfo),
+        vscode.commands.registerCommand('ferrite.clusterNodes', clusterNodes),
     );
 
     // Register completion provider for FerriteQL
@@ -243,7 +245,7 @@ async function connect() {
     }
 
     try {
-        client = new Redis({
+        const redisOptions: any = {
             host: connectionConfig.host,
             port: connectionConfig.port,
             password: connectionConfig.password,
@@ -256,7 +258,14 @@ async function connect() {
                 }
                 return Math.min(times * 200, 2000);
             },
-        });
+        };
+
+        // Enable TLS if configured on the connection profile
+        if (connectionConfig.tls) {
+            redisOptions.tls = { rejectUnauthorized: false };
+        }
+
+        client = new Redis(redisOptions);
 
         await client.connect();
 
@@ -578,6 +587,44 @@ async function flushDb() {
         } catch (err: any) {
             vscode.window.showErrorMessage(`Failed to flush database: ${err.message}`);
         }
+    }
+}
+
+// Show cluster info
+async function clusterInfo() {
+    if (!client) {
+        vscode.window.showErrorMessage('Not connected to Ferrite');
+        return;
+    }
+
+    try {
+        const info = await client.call('CLUSTER', 'INFO') as string;
+        const doc = await vscode.workspace.openTextDocument({
+            content: info,
+            language: 'ini'
+        });
+        await vscode.window.showTextDocument(doc);
+    } catch (err: any) {
+        vscode.window.showErrorMessage(`Failed to get cluster info: ${err.message}`);
+    }
+}
+
+// Show cluster nodes
+async function clusterNodes() {
+    if (!client) {
+        vscode.window.showErrorMessage('Not connected to Ferrite');
+        return;
+    }
+
+    try {
+        const nodes = await client.call('CLUSTER', 'NODES') as string;
+        const doc = await vscode.workspace.openTextDocument({
+            content: nodes,
+            language: 'plaintext'
+        });
+        await vscode.window.showTextDocument(doc);
+    } catch (err: any) {
+        vscode.window.showErrorMessage(`Failed to get cluster nodes: ${err.message}`);
     }
 }
 

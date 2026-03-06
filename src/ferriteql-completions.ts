@@ -209,6 +209,40 @@ export class FerriteQLCompletionProvider implements vscode.CompletionItemProvide
             { cmd: 'RESTORE.FROM', detail: 'Restore from snapshot' },
             // WASM
             { cmd: 'WASM.EXEC', detail: 'Execute WASM function' },
+            // Server & Admin
+            { cmd: 'INFO', detail: 'Get server information' },
+            { cmd: 'PING', detail: 'Test connection' },
+            { cmd: 'DBSIZE', detail: 'Get key count in database' },
+            { cmd: 'FLUSHDB', detail: 'Flush current database' },
+            { cmd: 'FLUSHALL', detail: 'Flush all databases' },
+            { cmd: 'CONFIG GET', detail: 'Get config parameter' },
+            { cmd: 'CONFIG SET', detail: 'Set config parameter' },
+            { cmd: 'CONFIG REWRITE', detail: 'Rewrite config file' },
+            { cmd: 'CONFIG RESETSTAT', detail: 'Reset statistics' },
+            { cmd: 'CLIENT LIST', detail: 'List connected clients' },
+            { cmd: 'CLIENT SETNAME', detail: 'Set connection name' },
+            { cmd: 'CLIENT INFO', detail: 'Current client info' },
+            { cmd: 'CLIENT ID', detail: 'Get client ID' },
+            { cmd: 'SLOWLOG GET', detail: 'Get slow queries' },
+            { cmd: 'SLOWLOG LEN', detail: 'Count slow queries' },
+            { cmd: 'SLOWLOG RESET', detail: 'Clear slow log' },
+            { cmd: 'MONITOR', detail: 'Stream all commands' },
+            { cmd: 'SHUTDOWN', detail: 'Shutdown server' },
+            // Transactions
+            { cmd: 'MULTI', detail: 'Start transaction' },
+            { cmd: 'EXEC', detail: 'Execute transaction' },
+            { cmd: 'DISCARD', detail: 'Discard transaction' },
+            { cmd: 'WATCH', detail: 'Watch keys for changes' },
+            { cmd: 'UNWATCH', detail: 'Unwatch all keys' },
+            // Scripting
+            { cmd: 'EVAL', detail: 'Execute Lua script' },
+            { cmd: 'EVALSHA', detail: 'Execute cached script' },
+            { cmd: 'SCRIPT LOAD', detail: 'Load Lua script' },
+            { cmd: 'SCRIPT EXISTS', detail: 'Check script exists' },
+            { cmd: 'SCRIPT FLUSH', detail: 'Clear script cache' },
+            // Cluster
+            { cmd: 'CLUSTER INFO', detail: 'Cluster state info' },
+            { cmd: 'CLUSTER NODES', detail: 'List cluster nodes' },
         ];
 
         ferriteCommands.forEach(({ cmd, detail }) => {
