@@ -2,12 +2,12 @@
   "Get Key": {
     "prefix": "get",
     "body": ["GET ${1:key}"],
-    "description": "Get the value of a key"
+    "description": "Get the value of a key from the Ferrite store"
   },
   "Set Key": {
     "prefix": "set",
     "body": ["SET ${1:key} \"${2:value}\""],
-    "description": "Set a key to a value"
+    "description": "Set a key to a string value in the Ferrite store"
   },
   "Set with Expiration": {
     "prefix": "setex",
