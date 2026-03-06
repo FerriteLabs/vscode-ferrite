@@ -43,3 +43,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [Unreleased]: https://github.com/ferritelabs/vscode-ferrite/compare/v1.1.0...HEAD
 [1.1.0]: https://github.com/ferritelabs/vscode-ferrite/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/ferritelabs/vscode-ferrite/releases/tag/v1.0.0
+
+### Troubleshooting
+
+- **Connection timeout on large clusters**: The default connection timeout has been increased
+  from 5s to 10s. Override with `ferrite.connectTimeout` in your VS Code settings.
+- **Auto-reconnect not triggering**: Ensure `ferrite.autoReconnect` is set to `true` (default).
