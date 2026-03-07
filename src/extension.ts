@@ -10,9 +10,14 @@ import { ServerInfoTreeProvider } from './providers/serverInfoTreeProvider';
 
 let client: Redis | null = null;
 let outputChannel: vscode.OutputChannel;
+let pubsubOutputChannel: vscode.OutputChannel;
 let statusBarItem: vscode.StatusBarItem;
 let keysTreeProvider: KeysTreeProvider;
 let serverInfoProvider: ServerInfoTreeProvider;
+
+// Pub/Sub state
+let subscriberClient: Redis | null = null;
+const activeSubscriptions = new Set<string>();
 
 // Connection manager extracted for better modularity and testability
 // Protocol parsing is delegated to parseCommand() utility
@@ -35,6 +40,7 @@ enum ConnectionState {
 
 export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel('Ferrite');
+    pubsubOutputChannel = vscode.window.createOutputChannel('Ferrite Pub/Sub');
 
     // Create status bar item
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
@@ -64,6 +70,10 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('ferrite.refreshKeys', () => keysTreeProvider.refresh()),
         vscode.commands.registerCommand('ferrite.refreshInfo', () => serverInfoProvider.refresh()),
         vscode.commands.registerCommand('ferrite.inspectKey', inspectKey),
+        vscode.commands.registerCommand('ferrite.editKey', editKey),
+        vscode.commands.registerCommand('ferrite.subscribe', subscribeToChannel),
+        vscode.commands.registerCommand('ferrite.unsubscribe', unsubscribeFromChannel),
+        vscode.commands.registerCommand('ferrite.unsubscribeAll', unsubscribeAll),
         vscode.commands.registerCommand('ferrite.clusterInfo', clusterInfo),
         vscode.commands.registerCommand('ferrite.clusterNodes', clusterNodes),
     );
@@ -109,6 +119,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() {
     serverInfoProvider?.stopAutoRefresh();
+    if (subscriberClient) {
+        subscriberClient.disconnect();
+        subscriberClient = null;
+        activeSubscriptions.clear();
+    }
     if (client) {
         client.quit();
     }
@@ -161,6 +176,221 @@ async function inspectKey(key: string) {
         await vscode.window.showTextDocument(doc);
     } catch (err: any) {
         vscode.window.showErrorMessage(`Failed to inspect key: ${err.message}`);
+    }
+}
+
+async function editKey(key: string) {
+    if (!client) {
+        vscode.window.showErrorMessage('Not connected to Ferrite');
+        return;
+    }
+
+    try {
+        const type = await client.type(key);
+
+        switch (type) {
+            case 'string': {
+                const currentValue = await client.get(key);
+                const newValue = await vscode.window.showInputBox({
+                    prompt: `Edit value for key: ${key}`,
+                    value: currentValue || '',
+                    placeHolder: 'Enter new value',
+                });
+                if (newValue !== undefined) {
+                    const ttl = await client.ttl(key);
+                    await client.set(key, newValue);
+                    if (ttl > 0) {
+                        await client.expire(key, ttl);
+                    }
+                    vscode.window.showInformationMessage(`Updated key: ${key}`);
+                    keysTreeProvider.refresh();
+                }
+                break;
+            }
+            case 'hash': {
+                const fields = await client.hgetall(key);
+                const fieldNames = Object.keys(fields);
+                if (fieldNames.length === 0) {
+                    vscode.window.showInformationMessage('Hash is empty');
+                    return;
+                }
+                const selectedField = await vscode.window.showQuickPick(
+                    fieldNames.map(f => ({ label: f, description: fields[f] })),
+                    { placeHolder: 'Select a field to edit' }
+                );
+                if (selectedField) {
+                    const newValue = await vscode.window.showInputBox({
+                        prompt: `Edit ${key} → ${selectedField.label}`,
+                        value: fields[selectedField.label],
+                        placeHolder: 'Enter new value',
+                    });
+                    if (newValue !== undefined) {
+                        await client.hset(key, selectedField.label, newValue);
+                        vscode.window.showInformationMessage(`Updated ${key} → ${selectedField.label}`);
+                        keysTreeProvider.refresh();
+                    }
+                }
+                break;
+            }
+            case 'list': {
+                const items = await client.lrange(key, 0, -1);
+                if (items.length === 0) {
+                    vscode.window.showInformationMessage('List is empty');
+                    return;
+                }
+                const action = await vscode.window.showQuickPick(
+                    [
+                        { label: 'Edit element', description: 'Modify an existing element' },
+                        { label: 'Push element', description: 'Add a new element to the list' },
+                    ],
+                    { placeHolder: 'Choose action' }
+                );
+                if (action?.label === 'Edit element') {
+                    const selected = await vscode.window.showQuickPick(
+                        items.map((item, i) => ({ label: `[${i}]`, description: item })),
+                        { placeHolder: 'Select element to edit' }
+                    );
+                    if (selected) {
+                        const index = parseInt(selected.label.slice(1, -1), 10);
+                        const newValue = await vscode.window.showInputBox({
+                            prompt: `Edit ${key}[${index}]`,
+                            value: selected.description,
+                            placeHolder: 'Enter new value',
+                        });
+                        if (newValue !== undefined) {
+                            await client.lset(key, index, newValue);
+                            vscode.window.showInformationMessage(`Updated ${key}[${index}]`);
+                            keysTreeProvider.refresh();
+                        }
+                    }
+                } else if (action?.label === 'Push element') {
+                    const newValue = await vscode.window.showInputBox({
+                        prompt: `Add element to ${key}`,
+                        placeHolder: 'Enter value',
+                    });
+                    if (newValue !== undefined) {
+                        await client.rpush(key, newValue);
+                        vscode.window.showInformationMessage(`Pushed element to ${key}`);
+                        keysTreeProvider.refresh();
+                    }
+                }
+                break;
+            }
+            default:
+                vscode.window.showWarningMessage(
+                    `Editing ${type} keys is not yet supported. Use the command line for this type.`
+                );
+        }
+    } catch (err: any) {
+        vscode.window.showErrorMessage(`Failed to edit key: ${err.message}`);
+    }
+}
+
+async function subscribeToChannel() {
+    if (!client) {
+        vscode.window.showErrorMessage('Not connected to Ferrite');
+        return;
+    }
+
+    const channel = await vscode.window.showInputBox({
+        prompt: 'Enter channel name to subscribe to',
+        placeHolder: 'my-channel',
+    });
+
+    if (!channel) {
+        return;
+    }
+
+    if (activeSubscriptions.has(channel)) {
+        vscode.window.showWarningMessage(`Already subscribed to '${channel}'`);
+        return;
+    }
+
+    try {
+        // Create a dedicated subscriber connection (ioredis requires separate connection for subscribe)
+        if (!subscriberClient) {
+            subscriberClient = client.duplicate();
+            subscriberClient.on('message', (ch: string, message: string) => {
+                const timestamp = new Date().toISOString();
+                pubsubOutputChannel.appendLine(`[${timestamp}] #${ch}: ${message}`);
+            });
+            subscriberClient.on('pmessage', (pattern: string, ch: string, message: string) => {
+                const timestamp = new Date().toISOString();
+                pubsubOutputChannel.appendLine(`[${timestamp}] ${pattern} → #${ch}: ${message}`);
+            });
+        }
+
+        // Detect pattern subscriptions (contains * or ?)
+        if (channel.includes('*') || channel.includes('?')) {
+            await subscriberClient.psubscribe(channel);
+        } else {
+            await subscriberClient.subscribe(channel);
+        }
+
+        activeSubscriptions.add(channel);
+        pubsubOutputChannel.show(true);
+        pubsubOutputChannel.appendLine(`--- Subscribed to '${channel}' at ${new Date().toISOString()} ---`);
+        vscode.window.showInformationMessage(`Subscribed to '${channel}' (${activeSubscriptions.size} active)`);
+    } catch (err: any) {
+        vscode.window.showErrorMessage(`Failed to subscribe: ${err.message}`);
+    }
+}
+
+async function unsubscribeFromChannel() {
+    if (activeSubscriptions.size === 0) {
+        vscode.window.showInformationMessage('No active subscriptions');
+        return;
+    }
+
+    const channel = await vscode.window.showQuickPick(
+        Array.from(activeSubscriptions),
+        { placeHolder: 'Select channel to unsubscribe from' }
+    );
+
+    if (!channel || !subscriberClient) {
+        return;
+    }
+
+    try {
+        if (channel.includes('*') || channel.includes('?')) {
+            await subscriberClient.punsubscribe(channel);
+        } else {
+            await subscriberClient.unsubscribe(channel);
+        }
+
+        activeSubscriptions.delete(channel);
+        pubsubOutputChannel.appendLine(`--- Unsubscribed from '${channel}' at ${new Date().toISOString()} ---`);
+        vscode.window.showInformationMessage(`Unsubscribed from '${channel}' (${activeSubscriptions.size} active)`);
+
+        if (activeSubscriptions.size === 0 && subscriberClient) {
+            subscriberClient.disconnect();
+            subscriberClient = null;
+        }
+    } catch (err: any) {
+        vscode.window.showErrorMessage(`Failed to unsubscribe: ${err.message}`);
+    }
+}
+
+async function unsubscribeAll() {
+    if (activeSubscriptions.size === 0) {
+        vscode.window.showInformationMessage('No active subscriptions');
+        return;
+    }
+
+    try {
+        if (subscriberClient) {
+            await subscriberClient.unsubscribe();
+            await subscriberClient.punsubscribe();
+            subscriberClient.disconnect();
+            subscriberClient = null;
+        }
+
+        const count = activeSubscriptions.size;
+        activeSubscriptions.clear();
+        pubsubOutputChannel.appendLine(`--- Unsubscribed from all ${count} channels at ${new Date().toISOString()} ---`);
+        vscode.window.showInformationMessage(`Unsubscribed from all ${count} channels`);
+    } catch (err: any) {
+        vscode.window.showErrorMessage(`Failed to unsubscribe: ${err.message}`);
     }
 }
 
