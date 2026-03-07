@@ -1,0 +1,130 @@
+{
+  "Ferrite Client Setup": {
+    "prefix": "ferrite-client",
+    "body": [
+      "FerriteClient client = FerriteClient.create(\"${1:localhost}\", ${2:6379});",
+      "$0"
+    ],
+    "description": "Create a Ferrite client"
+  },
+  "Ferrite Get": {
+    "prefix": "ferrite-get",
+    "body": ["String ${1:value} = client.get(\"${2:key}\");"],
+    "description": "Get a value"
+  },
+  "Ferrite Set": {
+    "prefix": "ferrite-set",
+    "body": ["client.set(\"${1:key}\", \"${2:value}\");"],
+    "description": "Set a value"
+  },
+  "Ferrite Set with Expiration": {
+    "prefix": "ferrite-setex",
+    "body": ["client.setex(\"${1:key}\", ${3:3600}, \"${2:value}\");"],
+    "description": "Set a value with expiration"
+  },
+  "Ferrite Hash Set": {
+    "prefix": "ferrite-hset",
+    "body": [
+      "client.hset(\"${1:key}\", Map.of(",
+      "\t\"${2:field}\", \"${3:value}\"",
+      "));"
+    ],
+    "description": "Set hash fields"
+  },
+  "Ferrite Hash Get All": {
+    "prefix": "ferrite-hgetall",
+    "body": ["Map<String, String> ${1:hash} = client.hgetall(\"${2:key}\");"],
+    "description": "Get all hash fields"
+  },
+  "Ferrite List Push": {
+    "prefix": "ferrite-lpush",
+    "body": ["client.lpush(\"${1:key}\", \"${2:value}\");"],
+    "description": "Push to list"
+  },
+  "Ferrite List Range": {
+    "prefix": "ferrite-lrange",
+    "body": ["List<String> ${1:items} = client.lrange(\"${2:key}\", 0, -1);"],
+    "description": "Get list range"
+  },
+  "Ferrite Set Add": {
+    "prefix": "ferrite-sadd",
+    "body": ["client.sadd(\"${1:key}\", \"${2:member}\");"],
+    "description": "Add to set"
+  },
+  "Ferrite Sorted Set Add": {
+    "prefix": "ferrite-zadd",
+    "body": ["client.zadd(\"${1:key}\", ${2:1.0}, \"${3:member}\");"],
+    "description": "Add to sorted set"
+  },
+  "Ferrite Pipeline": {
+    "prefix": "ferrite-pipeline",
+    "body": [
+      "List<Object> results = client.pipelined(pipe -> {",
+      "\tpipe.set(\"${1:key1}\", \"${2:value1}\");",
+      "\tpipe.get(\"${3:key2}\");",
+      "});"
+    ],
+    "description": "Execute pipeline"
+  },
+  "Ferrite Pub/Sub Subscribe": {
+    "prefix": "ferrite-subscribe",
+    "body": [
+      "client.subscribe(new JedisPubSub() {",
+      "\t@Override",
+      "\tpublic void onMessage(String channel, String message) {",
+      "\t\tSystem.out.println(message);",
+      "\t}",
+      "}, \"${1:channel}\");"
+    ],
+    "description": "Subscribe to channel"
+  },
+  "Ferrite Pub/Sub Publish": {
+    "prefix": "ferrite-publish",
+    "body": ["client.publish(\"${1:channel}\", \"${2:message}\");"],
+    "description": "Publish to channel"
+  },
+  "Ferrite Transaction": {
+    "prefix": "ferrite-transaction",
+    "body": [
+      "client.watch(\"${1:key}\");",
+      "String value = client.get(\"${1:key}\");",
+      "",
+      "Transaction tx = client.multi();",
+      "tx.set(\"${1:key}\", ${2:newValue});",
+      "",
+      "try {",
+      "\tList<Object> results = tx.exec();",
+      "} catch (Exception e) {",
+      "\t// Transaction was aborted",
+      "}"
+    ],
+    "description": "Execute transaction with watch"
+  },
+  "Ferrite Vector Search": {
+    "prefix": "ferrite-vector-search",
+    "body": [
+      "Object results = client.sendCommand(",
+      "\t\"VECTOR.SEARCH\", \"${1:index}\",",
+      "\t${2:embeddingJson},",
+      "\t\"TOP_K\", \"${3:10}\"",
+      ");"
+    ],
+    "description": "Vector similarity search"
+  },
+  "Ferrite Cache Pattern": {
+    "prefix": "ferrite-cache",
+    "body": [
+      "public <T> T getCached(String key, Supplier<T> fetch, int ttlSeconds) {",
+      "\tString cached = client.get(key);",
+      "\tif (cached != null) {",
+      "\t\treturn objectMapper.readValue(cached, new TypeReference<T>() {});",
+      "\t}",
+      "",
+      "\tT value = fetch.get();",
+      "\tclient.setex(key, ttlSeconds, objectMapper.writeValueAsString(value));",
+      "\treturn value;",
+      "}"
+    ],
+    "description": "Cache-aside pattern"
+  }
+}

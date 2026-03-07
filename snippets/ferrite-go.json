@@ -1,0 +1,141 @@
+{
+  "Ferrite Client Setup": {
+    "prefix": "ferrite-client",
+    "body": [
+      "client := ferrite.NewClient(ferrite.Options{",
+      "\tAddr: \"${1:localhost}:${2:6379}\",",
+      "})",
+      "defer client.Close()",
+      "",
+      "ctx := context.Background()",
+      "$0"
+    ],
+    "description": "Create a Ferrite client"
+  },
+  "Ferrite Get": {
+    "prefix": "ferrite-get",
+    "body": ["${1:value}, err := client.Get(ctx, \"${2:key}\")"],
+    "description": "Get a value"
+  },
+  "Ferrite Set": {
+    "prefix": "ferrite-set",
+    "body": ["err := client.Set(ctx, \"${1:key}\", \"${2:value}\")"],
+    "description": "Set a value"
+  },
+  "Ferrite Set with Expiration": {
+    "prefix": "ferrite-setex",
+    "body": ["err := client.Set(ctx, \"${1:key}\", \"${2:value}\", ferrite.WithTTL(${3:time.Hour}))"],
+    "description": "Set a value with expiration"
+  },
+  "Ferrite Hash Set": {
+    "prefix": "ferrite-hset",
+    "body": [
+      "err := client.HSet(ctx, \"${1:key}\", map[string]interface{}{",
+      "\t\"${2:field}\": \"${3:value}\",",
+      "})"
+    ],
+    "description": "Set hash fields"
+  },
+  "Ferrite Hash Get All": {
+    "prefix": "ferrite-hgetall",
+    "body": ["${1:hash}, err := client.HGetAll(ctx, \"${2:key}\")"],
+    "description": "Get all hash fields"
+  },
+  "Ferrite List Push": {
+    "prefix": "ferrite-lpush",
+    "body": ["err := client.LPush(ctx, \"${1:key}\", \"${2:value}\")"],
+    "description": "Push to list"
+  },
+  "Ferrite List Range": {
+    "prefix": "ferrite-lrange",
+    "body": ["${1:items}, err := client.LRange(ctx, \"${2:key}\", 0, -1)"],
+    "description": "Get list range"
+  },
+  "Ferrite Set Add": {
+    "prefix": "ferrite-sadd",
+    "body": ["err := client.SAdd(ctx, \"${1:key}\", \"${2:member}\")"],
+    "description": "Add to set"
+  },
+  "Ferrite Sorted Set Add": {
+    "prefix": "ferrite-zadd",
+    "body": ["err := client.ZAdd(ctx, \"${1:key}\", ferrite.Z{Score: ${2:1.0}, Member: \"${3:member}\"})"],
+    "description": "Add to sorted set"
+  },
+  "Ferrite Pipeline": {
+    "prefix": "ferrite-pipeline",
+    "body": [
+      "pipe := client.Pipeline()",
+      "pipe.Set(ctx, \"${1:key1}\", \"${2:value1}\")",
+      "pipe.Get(ctx, \"${3:key2}\")",
+      "results, err := pipe.Exec(ctx)"
+    ],
+    "description": "Execute pipeline"
+  },
+  "Ferrite Pub/Sub Subscribe": {
+    "prefix": "ferrite-subscribe",
+    "body": [
+      "sub := client.Subscribe(ctx, \"${1:channel}\")",
+      "defer sub.Close()",
+      "",
+      "for msg := range sub.Channel() {",
+      "\tfmt.Println(msg.Payload)",
+      "}"
+    ],
+    "description": "Subscribe to channel"
+  },
+  "Ferrite Pub/Sub Publish": {
+    "prefix": "ferrite-publish",
+    "body": ["err := client.Publish(ctx, \"${1:channel}\", \"${2:message}\")"],
+    "description": "Publish to channel"
+  },
+  "Ferrite Transaction": {
+    "prefix": "ferrite-transaction",
+    "body": [
+      "err := client.Watch(ctx, func(tx *ferrite.Tx) error {",
+      "\tval, err := tx.Get(ctx, \"${1:key}\").Result()",
+      "\tif err != nil {",
+      "\t\treturn err",
+      "\t}",
+      "\t_ = val",
+      "",
+      "\t_, err = tx.TxPipelined(ctx, func(pipe ferrite.Pipeliner) error {",
+      "\t\tpipe.Set(ctx, \"${1:key}\", ${2:newValue})",
+      "\t\treturn nil",
+      "\t})",
+      "\treturn err",
+      "}, \"${1:key}\")"
+    ],
+    "description": "Execute transaction with watch"
+  },
+  "Ferrite Vector Search": {
+    "prefix": "ferrite-vector-search",
+    "body": [
+      "results, err := client.Do(ctx,",
+      "\t\"VECTOR.SEARCH\", \"${1:index}\",",
+      "\t${2:embeddingJSON},",
+      "\t\"TOP_K\", \"${3:10}\",",
+      ").Result()"
+    ],
+    "description": "Vector similarity search"
+  },
+  "Ferrite Cache Pattern": {
+    "prefix": "ferrite-cache",
+    "body": [
+      "func getCached(ctx context.Context, client *ferrite.Client, key string, fetch func() (string, error), ttl time.Duration) (string, error) {",
+      "\tcached, err := client.Get(ctx, key).Result()",
+      "\tif err == nil {",
+      "\t\treturn cached, nil",
+      "\t}",
+      "",
+      "\tvalue, err := fetch()",
+      "\tif err != nil {",
+      "\t\treturn \"\", err",
+      "\t}",
+      "",
+      "\t_ = client.Set(ctx, key, value, ferrite.WithTTL(ttl))",
+      "\treturn value, nil",
+      "}"
+    ],
+    "description": "Cache-aside pattern"
+  }
+}

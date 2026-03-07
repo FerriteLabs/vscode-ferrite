@@ -40,6 +40,8 @@
     "onLanguage:ferriteql",
     "onCommand:ferrite.connect",
     "onCommand:ferrite.inspectKey",
+    "onCommand:ferrite.editKey",
+    "onCommand:ferrite.subscribe",
     "workspaceContains:**/ferrite.toml",
     "workspaceContains:**/.ferrite",
     "onLanguage:ferrite-config"
@@ -102,6 +104,18 @@
       {
         "language": "rust",
         "path": "./snippets/ferrite-rust.json"
+      },
+      {
+        "language": "go",
+        "path": "./snippets/ferrite-go.json"
+      },
+      {
+        "language": "java",
+        "path": "./snippets/ferrite-java.json"
+      },
+      {
+        "language": "csharp",
+        "path": "./snippets/ferrite-csharp.json"
       }
     ],
     "commands": [
@@ -157,6 +171,26 @@
       {
         "command": "ferrite.inspectKey",
         "title": "Ferrite: Inspect Key"
+      },
+      {
+        "command": "ferrite.editKey",
+        "title": "Ferrite: Edit Key Value",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "ferrite.subscribe",
+        "title": "Ferrite: Subscribe to Channel",
+        "icon": "$(bell)"
+      },
+      {
+        "command": "ferrite.unsubscribe",
+        "title": "Ferrite: Unsubscribe from Channel",
+        "icon": "$(bell-slash)"
+      },
+      {
+        "command": "ferrite.unsubscribeAll",
+        "title": "Ferrite: Unsubscribe from All Channels",
+        "icon": "$(close-all)"
       },
       {
         "command": "ferrite.clusterInfo",

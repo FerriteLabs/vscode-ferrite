@@ -1,0 +1,134 @@
+{
+  "Ferrite Client Setup": {
+    "prefix": "ferrite-client",
+    "body": [
+      "var client = await FerriteClient.ConnectAsync(\"${1:localhost}:${2:6379}\");",
+      "$0"
+    ],
+    "description": "Create a Ferrite client"
+  },
+  "Ferrite Get": {
+    "prefix": "ferrite-get",
+    "body": ["var ${1:value} = await client.GetAsync(\"${2:key}\");"],
+    "description": "Get a value"
+  },
+  "Ferrite Set": {
+    "prefix": "ferrite-set",
+    "body": ["await client.SetAsync(\"${1:key}\", \"${2:value}\");"],
+    "description": "Set a value"
+  },
+  "Ferrite Set with Expiration": {
+    "prefix": "ferrite-setex",
+    "body": ["await client.SetAsync(\"${1:key}\", \"${2:value}\", TimeSpan.FromSeconds(${3:3600}));"],
+    "description": "Set a value with expiration"
+  },
+  "Ferrite Hash Set": {
+    "prefix": "ferrite-hset",
+    "body": [
+      "await client.HSetAsync(\"${1:key}\", new HashEntry[]",
+      "{",
+      "\tnew HashEntry(\"${2:field}\", \"${3:value}\"),",
+      "});"
+    ],
+    "description": "Set hash fields"
+  },
+  "Ferrite Hash Get All": {
+    "prefix": "ferrite-hgetall",
+    "body": ["var ${1:hash} = await client.HGetAllAsync(\"${2:key}\");"],
+    "description": "Get all hash fields"
+  },
+  "Ferrite List Push": {
+    "prefix": "ferrite-lpush",
+    "body": ["await client.LPushAsync(\"${1:key}\", \"${2:value}\");"],
+    "description": "Push to list"
+  },
+  "Ferrite List Range": {
+    "prefix": "ferrite-lrange",
+    "body": ["var ${1:items} = await client.LRangeAsync(\"${2:key}\", 0, -1);"],
+    "description": "Get list range"
+  },
+  "Ferrite Set Add": {
+    "prefix": "ferrite-sadd",
+    "body": ["await client.SAddAsync(\"${1:key}\", \"${2:member}\");"],
+    "description": "Add to set"
+  },
+  "Ferrite Sorted Set Add": {
+    "prefix": "ferrite-zadd",
+    "body": ["await client.ZAddAsync(\"${1:key}\", new SortedSetEntry(\"${3:member}\", ${2:1.0}));"],
+    "description": "Add to sorted set"
+  },
+  "Ferrite Pipeline": {
+    "prefix": "ferrite-pipeline",
+    "body": [
+      "var batch = client.CreateBatch();",
+      "var setTask = batch.SetAsync(\"${1:key1}\", \"${2:value1}\");",
+      "var getTask = batch.GetAsync(\"${3:key2}\");",
+      "batch.Execute();",
+      "await Task.WhenAll(setTask, getTask);"
+    ],
+    "description": "Execute pipeline"
+  },
+  "Ferrite Pub/Sub Subscribe": {
+    "prefix": "ferrite-subscribe",
+    "body": [
+      "var subscriber = client.GetSubscriber();",
+      "await subscriber.SubscribeAsync(\"${1:channel}\", (channel, message) =>",
+      "{",
+      "\tConsole.WriteLine(message);",
+      "});"
+    ],
+    "description": "Subscribe to channel"
+  },
+  "Ferrite Pub/Sub Publish": {
+    "prefix": "ferrite-publish",
+    "body": ["await client.GetSubscriber().PublishAsync(\"${1:channel}\", \"${2:message}\");"],
+    "description": "Publish to channel"
+  },
+  "Ferrite Transaction": {
+    "prefix": "ferrite-transaction",
+    "body": [
+      "var tran = client.CreateTransaction();",
+      "tran.AddCondition(Condition.StringEqual(\"${1:key}\", ${2:expectedValue}));",
+      "var setTask = tran.SetAsync(\"${1:key}\", ${3:newValue});",
+      "",
+      "if (await tran.ExecuteAsync())",
+      "{",
+      "\tawait setTask;",
+      "}",
+      "else",
+      "{",
+      "\t// Transaction was aborted",
+      "}"
+    ],
+    "description": "Execute transaction with watch"
+  },
+  "Ferrite Vector Search": {
+    "prefix": "ferrite-vector-search",
+    "body": [
+      "var results = await client.ExecuteAsync(",
+      "\t\"VECTOR.SEARCH\", \"${1:index}\",",
+      "\t${2:embeddingJson},",
+      "\t\"TOP_K\", \"${3:10}\"",
+      ");"
+    ],
+    "description": "Vector similarity search"
+  },
+  "Ferrite Cache Pattern": {
+    "prefix": "ferrite-cache",
+    "body": [
+      "async Task<T> GetCachedAsync<T>(string key, Func<Task<T>> fetch, TimeSpan ttl)",
+      "{",
+      "\tvar cached = await client.GetAsync(key);",
+      "\tif (cached.HasValue)",
+      "\t{",
+      "\t\treturn JsonSerializer.Deserialize<T>(cached!);",
+      "\t}",
+      "",
+      "\tvar value = await fetch();",
+      "\tawait client.SetAsync(key, JsonSerializer.Serialize(value), ttl);",
+      "\treturn value;",
+      "}"
+    ],
+    "description": "Cache-aside pattern"
+  }
+}
