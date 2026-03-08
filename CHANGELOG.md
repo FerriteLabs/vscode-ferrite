@@ -57,3 +57,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Connection timeout on large clusters**: The default connection timeout has been increased
   from 5s to 10s. Override with `ferrite.connectTimeout` in your VS Code settings.
 - **Auto-reconnect not triggering**: Ensure `ferrite.autoReconnect` is set to `true` (default).
+
