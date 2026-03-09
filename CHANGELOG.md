@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-03-09
+
 ### Added
 
 - Key browser tree view filtering with glob patterns
@@ -48,7 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Snippets (FerriteQL)**: Common commands (GET, SET, HSET, ZADD, VECTOR.SEARCH, TS.ADD)
 - **Diagnostics**: Real-time validation with error and typo detection
 
-[Unreleased]: https://github.com/ferritelabs/vscode-ferrite/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/ferritelabs/vscode-ferrite/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/ferritelabs/vscode-ferrite/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/ferritelabs/vscode-ferrite/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/ferritelabs/vscode-ferrite/releases/tag/v1.0.0
 
