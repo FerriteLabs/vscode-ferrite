@@ -173,6 +173,46 @@
           }
         },
         {
+          "name": "keyword.control.autoindex.ferriteql",
+          "match": "\\b(AUTOINDEX\\.RECORD|AUTOINDEX\\.ANALYZE|AUTOINDEX\\.RECOMMEND|AUTOINDEX\\.APPLY|AUTOINDEX\\.LIST|AUTOINDEX\\.REMOVE|AUTOINDEX\\.STATS|AUTOINDEX\\.INFO|AUTOINDEX\\.CLEANUP)\\b",
+          "captures": { "1": { "name": "support.function.autoindex.ferriteql" } }
+        },
+        {
+          "name": "keyword.control.conversation.ferriteql",
+          "match": "\\b(CONV\\.CREATE|CONV\\.DELETE|CONV\\.MESSAGE|CONV\\.CONTEXT|CONV\\.LIST|CONV\\.INFO|CONV\\.CLEAR|CONV\\.SYSTEM|CONV\\.STATS)\\b",
+          "captures": { "1": { "name": "support.function.conversation.ferriteql" } }
+        },
+        {
+          "name": "keyword.control.cost.ferriteql",
+          "match": "\\b(COST\\.ESTIMATE|COST\\.OPTIMIZE|COST\\.HINTS|COST\\.STATS|COST\\.BUDGET)\\b",
+          "captures": { "1": { "name": "support.function.cost.ferriteql" } }
+        },
+        {
+          "name": "keyword.control.multicloud.ferriteql",
+          "match": "\\b(MULTICLOUD\\.PROVIDER\\.ADD|MULTICLOUD\\.PROVIDER\\.LIST|MULTICLOUD\\.REGION\\.ADD|MULTICLOUD\\.REGION\\.LIST|MULTICLOUD\\.SYNC|MULTICLOUD\\.STATUS|MULTICLOUD\\.HEALTH)\\b",
+          "captures": { "1": { "name": "support.function.multicloud.ferriteql" } }
+        },
+        {
+          "name": "keyword.control.policy.ferriteql",
+          "match": "\\b(POLICY\\.CREATE|POLICY\\.DELETE|POLICY\\.GET|POLICY\\.LIST|POLICY\\.EVALUATE|POLICY\\.STATS)\\b",
+          "captures": { "1": { "name": "support.function.policy.ferriteql" } }
+        },
+        {
+          "name": "keyword.control.s3.ferriteql",
+          "match": "\\b(S3\\.BUCKET\\.CREATE|S3\\.BUCKET\\.DELETE|S3\\.BUCKET\\.LIST|S3\\.PUT|S3\\.GET|S3\\.DELETE|S3\\.LIST|S3\\.STATS)\\b",
+          "captures": { "1": { "name": "support.function.s3.ferriteql" } }
+        },
+        {
+          "name": "keyword.control.slot.ferriteql",
+          "match": "\\b(SLOT\\.CREATE|SLOT\\.DROP|SLOT\\.LIST|SLOT\\.START|SLOT\\.STOP|SLOT\\.STATS)\\b",
+          "captures": { "1": { "name": "support.function.slot.ferriteql" } }
+        },
+        {
+          "name": "keyword.control.vectoringest.ferriteql",
+          "match": "\\b(VECTOR\\.INGEST\\.START|VECTOR\\.INGEST\\.STOP|VECTOR\\.INGEST\\.PAUSE|VECTOR\\.INGEST\\.RESUME|VECTOR\\.INGEST\\.STATUS|VECTOR\\.INGEST\\.LIST)\\b",
+          "captures": { "1": { "name": "support.function.vectoringest.ferriteql" } }
+        },
+        {
           "name": "keyword.control.cluster.ferriteql",
           "match": "\\b(CLUSTER\\s+INFO|CLUSTER\\s+NODES|CLUSTER\\s+MEET|CLUSTER\\s+FORGET|CLUSTER\\s+REPLICATE|CLUSTER\\s+SAVECONFIG|CLUSTER\\s+ADDSLOTS|CLUSTER\\s+DELSLOTS|CLUSTER\\s+FLUSHSLOTS|CLUSTER\\s+SETSLOT|CLUSTER\\s+KEYSLOT|CLUSTER\\s+COUNTKEYSINSLOT|CLUSTER\\s+GETKEYSINSLOT|CLUSTER\\s+FAILOVER|CLUSTER\\s+RESET|CLUSTER\\s+MYID|CLUSTER\\s+SLOTS|CLUSTER\\s+SHARDS|CLUSTER\\s+LINKS)\\b",
           "captures": {
