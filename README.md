@@ -45,6 +45,9 @@ Snippets for common operations in multiple languages:
 
 ## Installation
 
+> **Compatibility:** This extension is versioned independently from the Ferrite server.
+> Extension v1.x works with any Ferrite server v0.2.0 or later (same Redis protocol).
+
 ### From VS Code Marketplace
 
 1. Open VS Code
