@@ -1,11 +1,11 @@
 # Default owners for everything
-* @josedab
+* @ferritelabs/extensions
 
 # Extension source
-/src/ @josedab
+/src/ @ferritelabs/extensions
 /syntaxes/ @josedab
 /snippets/ @josedab
 
 # CI/CD and infrastructure
-/.github/ @josedab
+/.github/ @ferritelabs/devops
 /package.json @josedab
