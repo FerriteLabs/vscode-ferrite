@@ -292,5 +292,156 @@
       "HISTORY ${1:key} SINCE ${2:-24h}"
     ],
     "description": "View key version history"
+  },
+
+  "Mnemo Put": {
+    "prefix": "mem-put",
+    "body": ["MEM.PUT ${1:tenant} ${2:key} \"${3:value}\""],
+    "description": "Store a memory record"
+  },
+  "Mnemo Get": {
+    "prefix": "mem-get",
+    "body": ["MEM.GET ${1:tenant} ${2:key}"],
+    "description": "Retrieve a memory record"
+  },
+  "Mnemo Recall": {
+    "prefix": "mem-recall",
+    "body": ["MEM.RECALL ${1:tenant} \"${2:query}\" TOP ${3:5}"],
+    "description": "Semantic recall across memories"
+  },
+  "Mnemo Forget": {
+    "prefix": "mem-forget",
+    "body": ["MEM.FORGET ${1:tenant} ${2:key}"],
+    "description": "Delete a memory record"
+  },
+  "Mnemo Stats": {
+    "prefix": "mem-stats",
+    "body": ["MEM.STATS ${1:tenant}"],
+    "description": "Get memory store statistics"
+  },
+
+  "Forge Load": {
+    "prefix": "fn-load",
+    "body": ["FN.LOAD ${1:module_name} \"${2:./path/to/module.wasm}\""],
+    "description": "Load a stored function module"
+  },
+  "Forge Call": {
+    "prefix": "fn-call",
+    "body": ["FN.CALL ${1:fn_name} ${2:num_keys} ${3:key} ${4:arg}"],
+    "description": "Call a stored function"
+  },
+  "Forge Call Read-Only": {
+    "prefix": "fn-call-ro",
+    "body": ["FN.CALL_RO ${1:fn_name} ${2:num_keys} ${3:key} ${4:arg}"],
+    "description": "Call a stored function (read-only)"
+  },
+  "Forge Drop": {
+    "prefix": "fn-drop",
+    "body": ["FN.DROP ${1:module_name}"],
+    "description": "Drop a stored function module"
+  },
+  "Forge List": {
+    "prefix": "fn-list",
+    "body": ["FN.LIST"],
+    "description": "List loaded function modules"
+  },
+  "Forge Stats": {
+    "prefix": "fn-stats",
+    "body": ["FN.STATS ${1:fn_name}"],
+    "description": "Get function execution statistics"
+  },
+
+  "Chronicle Branch": {
+    "prefix": "chr-branch",
+    "body": ["CHR.BRANCH ${1:branch_name}"],
+    "description": "Create a new branch"
+  },
+  "Chronicle Use": {
+    "prefix": "chr-use",
+    "body": ["CHR.USE ${1:branch_name}"],
+    "description": "Switch to a branch"
+  },
+  "Chronicle Set": {
+    "prefix": "chr-set",
+    "body": ["CHR.SET ${1:key} \"${2:value}\""],
+    "description": "Set key in current branch"
+  },
+  "Chronicle Get": {
+    "prefix": "chr-get",
+    "body": ["CHR.GET ${1:key}"],
+    "description": "Get key from current branch"
+  },
+  "Chronicle Snapshot": {
+    "prefix": "chr-snapshot",
+    "body": ["CHR.SNAPSHOT ${1:branch_name}"],
+    "description": "Create branch snapshot"
+  },
+  "Chronicle Rollback": {
+    "prefix": "chr-rollback",
+    "body": ["CHR.ROLLBACK ${1:branch_name} ${2:snapshot_id}"],
+    "description": "Rollback branch to snapshot"
+  },
+  "Chronicle Stats": {
+    "prefix": "chr-stats",
+    "body": ["CHR.STATS"],
+    "description": "Get branch statistics"
+  },
+
+  "Lucidity Append": {
+    "prefix": "luc-append",
+    "body": ["LUC.APPEND \"${1:entry_data}\""],
+    "description": "Append entry to audit log"
+  },
+  "Lucidity Proof": {
+    "prefix": "luc-proof",
+    "body": ["LUC.PROOF ${1:index}"],
+    "description": "Generate Merkle proof for entry"
+  },
+  "Lucidity Head": {
+    "prefix": "luc-head",
+    "body": ["LUC.HEAD"],
+    "description": "Get latest audit log entry"
+  },
+  "Lucidity Length": {
+    "prefix": "luc-len",
+    "body": ["LUC.LEN"],
+    "description": "Get audit log length"
+  },
+
+  "Concord Increment": {
+    "prefix": "con-ginc",
+    "body": ["CON.GINC ${1:key} ${2:amount}"],
+    "description": "Increment G-Counter"
+  },
+  "Concord Value": {
+    "prefix": "con-gval",
+    "body": ["CON.GVAL ${1:key}"],
+    "description": "Get G-Counter value"
+  },
+  "Concord Merge": {
+    "prefix": "con-gmerge",
+    "body": ["CON.GMERGE ${1:key} ${2:peer_state}"],
+    "description": "Merge CRDT state from peer"
+  },
+
+  "Pangea Allocate": {
+    "prefix": "png-alloc",
+    "body": ["PNG.ALLOC ${1:size_bytes}"],
+    "description": "Allocate storage block"
+  },
+  "Pangea Read": {
+    "prefix": "png-read",
+    "body": ["PNG.READ ${1:block_id}"],
+    "description": "Read from storage block"
+  },
+  "Pangea Free": {
+    "prefix": "png-free",
+    "body": ["PNG.FREE ${1:block_id}"],
+    "description": "Free storage block"
+  },
+  "Pangea Stats": {
+    "prefix": "png-stats",
+    "body": ["PNG.STATS"],
+    "description": "Get storage tier statistics"
   }
 }
