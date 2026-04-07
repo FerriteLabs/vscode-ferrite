@@ -218,6 +218,36 @@
           "captures": {
             "1": { "name": "support.function.cluster.ferriteql" }
           }
+        },
+        {
+          "name": "keyword.control.mnemo.ferriteql",
+          "match": "\\b(MEM\\.PUT|MEM\\.GET|MEM\\.RECALL|MEM\\.FORGET|MEM\\.STATS|MEM\\.SAVE|MEM\\.LOAD|MEM\\.HELP)\\b",
+          "captures": { "1": { "name": "support.function.mnemo.ferriteql" } }
+        },
+        {
+          "name": "keyword.control.forge.ferriteql",
+          "match": "\\b(FN\\.LOAD|FN\\.CALL|FN\\.CALL_RO|FN\\.DROP|FN\\.LIST|FN\\.STATS|FN\\.SHOW|FN\\.HELP)\\b",
+          "captures": { "1": { "name": "support.function.forge.ferriteql" } }
+        },
+        {
+          "name": "keyword.control.chronicle.ferriteql",
+          "match": "\\b(CHR\\.BRANCH|CHR\\.USE|CHR\\.SET|CHR\\.GET|CHR\\.DEL|CHR\\.STATS|CHR\\.SNAPSHOT|CHR\\.ROLLBACK|CHR\\.SAVE|CHR\\.LOAD|CHR\\.HELP)\\b",
+          "captures": { "1": { "name": "support.function.chronicle.ferriteql" } }
+        },
+        {
+          "name": "keyword.control.lucidity.ferriteql",
+          "match": "\\b(LUC\\.APPEND|LUC\\.DEL|LUC\\.LEN|LUC\\.HEAD|LUC\\.PROOF|LUC\\.SAVE|LUC\\.LOAD|LUC\\.HELP)\\b",
+          "captures": { "1": { "name": "support.function.lucidity.ferriteql" } }
+        },
+        {
+          "name": "keyword.control.concord.ferriteql",
+          "match": "\\b(CON\\.GINC|CON\\.GVAL|CON\\.GMERGE|CON\\.SAVE|CON\\.LOAD|CON\\.HELP)\\b",
+          "captures": { "1": { "name": "support.function.concord.ferriteql" } }
+        },
+        {
+          "name": "keyword.control.pangea.ferriteql",
+          "match": "\\b(PNG\\.ALLOC|PNG\\.READ|PNG\\.FREE|PNG\\.STATS|PNG\\.SAVE|PNG\\.LOAD|PNG\\.HELP)\\b",
+          "captures": { "1": { "name": "support.function.pangea.ferriteql" } }
         }
       ]
     },
