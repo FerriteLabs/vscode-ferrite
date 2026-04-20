@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-04-20
+
+### Added
+
+- Snippet templates for all moonshot command families: `MEM.*`, `FN.*`, `CON.*`, `PNG.*`
+- IntelliSense completions for Mnemo (MEM), Forge (FN), Concord (CON), and Pangea (PNG) commands
+- FerriteQL grammar extended with moonshot command keywords and subcommands
+- Dev container configuration for zero-setup contributor onboarding
+- CodeQL security analysis workflow
+- Prettier configuration for consistent code formatting
+
 ## [1.2.0] - 2026-03-09
 
 ### Added
