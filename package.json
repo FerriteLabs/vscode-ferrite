@@ -298,6 +298,11 @@
                 "type": "boolean",
                 "default": false,
                 "description": "Use TLS connection"
+              },
+              "tlsVerifyCertificate": {
+                "type": "boolean",
+                "default": true,
+                "description": "Verify server TLS certificate (disable only for self-signed certs in development)"
               }
             }
           }
@@ -331,6 +336,13 @@
           "type": "boolean",
           "default": true,
           "description": "Validate ferrite.toml on save"
+        },
+        "ferrite.commandTimeout": {
+          "type": "number",
+          "default": 30,
+          "minimum": 1,
+          "maximum": 300,
+          "description": "Command execution timeout in seconds"
         },
         "ferrite.connectTimeout": {
           "type": "number",

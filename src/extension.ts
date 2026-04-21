@@ -14,6 +14,7 @@ let pubsubOutputChannel: vscode.OutputChannel;
 let statusBarItem: vscode.StatusBarItem;
 let keysTreeProvider: KeysTreeProvider;
 let serverInfoProvider: ServerInfoTreeProvider;
+let configDiagnostics: vscode.DiagnosticCollection;
 
 // Pub/Sub state
 let subscriberClient: Redis | null = null;
@@ -41,6 +42,8 @@ enum ConnectionState {
 export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel('Ferrite');
     pubsubOutputChannel = vscode.window.createOutputChannel('Ferrite Pub/Sub');
+    configDiagnostics = vscode.languages.createDiagnosticCollection('ferrite-config');
+    context.subscriptions.push(configDiagnostics);
 
     // Create status bar item
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
@@ -50,7 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Register tree view providers
     const connectionsProvider = new ConnectionsTreeProvider();
-    keysTreeProvider = new KeysTreeProvider(() => client);
+    keysTreeProvider = new KeysTreeProvider(() => client, outputChannel);
     serverInfoProvider = new ServerInfoTreeProvider(() => client);
 
     vscode.window.registerTreeDataProvider('ferrite-connections', connectionsProvider);
@@ -127,6 +130,10 @@ export function deactivate() {
     if (client) {
         client.quit();
     }
+    connectionManager?.dispose();
+    statusBarItem?.dispose();
+    outputChannel?.dispose();
+    pubsubOutputChannel?.dispose();
 }
 
 // Inspect a key from the tree view
@@ -310,6 +317,9 @@ async function subscribeToChannel() {
         // Create a dedicated subscriber connection (ioredis requires separate connection for subscribe)
         if (!subscriberClient) {
             subscriberClient = client.duplicate();
+            subscriberClient.on('error', (err: Error) => {
+                pubsubOutputChannel.appendLine(`[${new Date().toISOString()}] Pub/Sub error: ${err.message}`);
+            });
             subscriberClient.on('message', (ch: string, message: string) => {
                 const timestamp = new Date().toISOString();
                 pubsubOutputChannel.appendLine(`[${timestamp}] #${ch}: ${message}`);
@@ -492,7 +502,8 @@ async function connect() {
 
         // Enable TLS if configured on the connection profile
         if (connectionConfig.tls) {
-            redisOptions.tls = { rejectUnauthorized: false };
+            const verifyCert = connectionConfig.tlsVerifyCertificate !== false;
+            redisOptions.tls = { rejectUnauthorized: verifyCert };
         }
 
         client = new Redis(redisOptions);
@@ -576,7 +587,12 @@ async function executeCommand() {
         return;
     }
 
-    await executeCommandText(command);
+    try {
+        await executeCommandText(command);
+    } catch (err: any) {
+        outputChannel.appendLine(`Error: ${err.message || 'Unknown error'}`);
+        vscode.window.showErrorMessage(`Command failed: ${err.message || 'Unknown error'}`);
+    }
 }
 
 // Execute selected text
@@ -593,7 +609,11 @@ async function executeSelection() {
     const commands = selection.split('\n').filter(c => c.trim() && !c.trim().startsWith('#'));
 
     for (const command of commands) {
-        await executeCommandText(command.trim());
+        try {
+            await executeCommandText(command.trim());
+        } catch (err: any) {
+            outputChannel.appendLine(`Error executing '${command.trim()}': ${err.message || 'Unknown error'}`);
+        }
     }
 }
 
@@ -608,9 +628,16 @@ async function executeCommandText(commandText: string) {
 
         outputChannel.appendLine(`> ${commandText}`);
 
-        const result = await client.call(command, ...args);
-
         const config = vscode.workspace.getConfiguration('ferrite');
+        const timeoutMs = (config.get<number>('commandTimeout') || 30) * 1000;
+
+        const resultPromise = client.call(command, ...args);
+        const timeoutPromise = new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error(`Command timed out after ${timeoutMs / 1000}s`)), timeoutMs)
+        );
+
+        const result = await Promise.race([resultPromise, timeoutPromise]);
+
         const format = config.get('outputFormat') || 'json';
 
         const formatted = formatResult(result, format as string);
@@ -677,6 +704,10 @@ export function parseCommand(cmd: string): string[] {
 
     if (current) {
         parts.push(current);
+    }
+
+    if (inQuote) {
+        throw new Error(`Unclosed ${quoteChar} quote in command`);
     }
 
     return parts;
@@ -866,8 +897,7 @@ async function validateConfig() {
         return;
     }
 
-    const diagnosticCollection = vscode.languages.createDiagnosticCollection('ferrite-config');
-    validateConfigFile(editor.document, diagnosticCollection);
+    validateConfigFile(editor.document, configDiagnostics);
 }
 
 // Validate config file content (exported for testing)

@@ -13,7 +13,7 @@ export class ConnectionManager {
     private readonly outputChannel: vscode.OutputChannel;
 
     private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
-    private lastConfig: { host: string; port: number; password?: string; database?: number; tls?: boolean } | null = null;
+    private lastConfig: { host: string; port: number; password?: string; database?: number; tls?: boolean; tlsVerifyCertificate?: boolean } | null = null;
     private reconnecting = false;
 
     readonly onDidConnect = this._onDidConnect.event;
@@ -70,10 +70,14 @@ export class ConnectionManager {
 
         // Enable TLS if configured
         if (config.tls) {
+            const verifyCert = config.tlsVerifyCertificate !== false;
             redisOptions.tls = {
-                rejectUnauthorized: false,
+                rejectUnauthorized: verifyCert,
             };
-            this.outputChannel.appendLine(`[${new Date().toISOString()}] TLS enabled for connection`);
+            this.outputChannel.appendLine(`[${new Date().toISOString()}] TLS enabled (certificate verification: ${verifyCert ? 'on' : 'off'})`);
+            if (!verifyCert) {
+                this.outputChannel.appendLine(`[${new Date().toISOString()}] ⚠ TLS certificate verification is disabled — not recommended for production`);
+            }
         }
 
         this.client = new Redis(redisOptions);
@@ -144,12 +148,20 @@ export class ConnectionManager {
         if (interval <= 0) {
             return;
         }
+        let consecutiveFailures = 0;
         this.heartbeatInterval = setInterval(async () => {
             if (this.client && this.client.status === 'ready') {
                 try {
                     await this.client.ping();
+                    consecutiveFailures = 0;
                 } catch {
-                    this.outputChannel.appendLine(`[${new Date().toISOString()}] Heartbeat failed`);
+                    consecutiveFailures++;
+                    this.outputChannel.appendLine(`[${new Date().toISOString()}] Heartbeat failed (${consecutiveFailures})`);
+                    if (consecutiveFailures >= 3 && this.lastConfig && !this.reconnecting) {
+                        this.outputChannel.appendLine(`[${new Date().toISOString()}] Connection appears stale — attempting reconnect`);
+                        this.stopHeartbeat();
+                        this.attemptReconnect();
+                    }
                 }
             }
         }, interval);
