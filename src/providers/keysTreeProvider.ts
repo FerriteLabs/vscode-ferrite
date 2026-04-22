@@ -10,8 +10,11 @@ export class KeysTreeProvider implements vscode.TreeDataProvider<KeyItem> {
     readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
     private filterPattern: string = '*';
+    private outputChannel: vscode.OutputChannel | undefined;
 
-    constructor(private getClient: () => Redis | null) {}
+    constructor(private getClient: () => Redis | null, outputChannel?: vscode.OutputChannel) {
+        this.outputChannel = outputChannel;
+    }
 
     setFilter(pattern: string): void {
         this.filterPattern = pattern || '*';
@@ -68,8 +71,10 @@ export class KeysTreeProvider implements vscode.TreeDataProvider<KeyItem> {
             }
 
             return [];
-        } catch {
-            return [new KeyItem('Error loading keys', '', 'none', vscode.TreeItemCollapsibleState.None)];
+        } catch (err: any) {
+            const message = err?.message || 'Unknown error';
+            this.outputChannel?.appendLine(`[Keys] Error loading keys: ${message}`);
+            return [new KeyItem(`Error: ${message}`, '', 'none', vscode.TreeItemCollapsibleState.None)];
         }
     }
 

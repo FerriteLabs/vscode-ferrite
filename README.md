@@ -197,8 +197,11 @@ You can also configure connections via environment variables:
 | `password` | string | Authentication password |
 | `database` | number | Database number (default: 0) |
 | `tls` | boolean | Use TLS connection |
+| `tlsVerifyCertificate` | boolean | Verify server TLS certificate (default: true) |
 
 > **⚠️ Password Security:** Connection passwords stored in VS Code settings are saved in plain text in your `settings.json` file. For production environments, consider using environment variables or a secrets manager. Avoid committing `settings.json` files containing passwords to version control. VS Code's `machine`-scoped settings keep connection passwords local to each machine and prevent them from being synced via Settings Sync.
+
+> **🔒 TLS Certificate Verification:** By default, `tlsVerifyCertificate` is `true`, which validates the server's TLS certificate. Only set it to `false` for development with self-signed certificates. Disabling verification in production exposes connections to man-in-the-middle attacks.
 
 ## Ferrite Explorer
 
@@ -278,17 +281,17 @@ format = "json"
 
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](https://github.com/ferritelabs/ferrite/blob/main/CONTRIBUTING.md).
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-Apache 2.0 - See [LICENSE](https://github.com/ferritelabs/ferrite/blob/main/LICENSE) for details.
+Apache 2.0 - See [LICENSE](LICENSE) for details.
 
 ## 🌐 FerriteLabs Ecosystem
 
 | Repository | Description |
 |-----------|-------------|
-| [ferrite](https://github.com/ferritelabs/ferrite) | Core database engine (Rust, 12 crates) |
+| [ferrite](https://github.com/ferritelabs/ferrite) | Core database engine (Rust, 19 crates) |
 | [ferrite-docs](https://github.com/ferritelabs/ferrite-docs) | Documentation website |
 | [ferrite-ops](https://github.com/ferritelabs/ferrite-ops) | Docker, Helm, Grafana, packaging |
 | [ferrite-bench](https://github.com/ferritelabs/ferrite-bench) | Performance benchmarks |
