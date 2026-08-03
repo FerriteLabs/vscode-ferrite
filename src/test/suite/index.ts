@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as vscode from 'vscode';
 import Mocha from 'mocha';
 import { glob } from 'glob';
 
@@ -13,6 +14,12 @@ export async function run(): Promise<void> {
     const files = await glob('**/**.test.js', { cwd: testsRoot });
 
     files.forEach(f => mocha.addFile(path.resolve(testsRoot, f)));
+
+    const extension = vscode.extensions.getExtension('ferrite.ferrite');
+    if (!extension) {
+        throw new Error('Ferrite extension is not registered');
+    }
+    await extension.activate();
 
     return new Promise<void>((resolve, reject) => {
         mocha.run(failures => {

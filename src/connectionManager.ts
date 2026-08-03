@@ -1,6 +1,15 @@
 import * as vscode from 'vscode';
 import Redis from 'ioredis';
 
+type ConnectionConfig = {
+    host: string;
+    port: number;
+    password?: string;
+    database?: number;
+    tls?: boolean;
+    tlsVerifyCertificate?: boolean;
+};
+
 /**
  * ConnectionManager handles the lifecycle of Ferrite server connections,
  * including auto-reconnect with exponential backoff and periodic heartbeat.
@@ -13,7 +22,7 @@ export class ConnectionManager {
     private readonly outputChannel: vscode.OutputChannel;
 
     private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
-    private lastConfig: { host: string; port: number; password?: string; database?: number; tls?: boolean; tlsVerifyCertificate?: boolean } | null = null;
+    private lastConfig: ConnectionConfig | null = null;
     private reconnecting = false;
 
     readonly onDidConnect = this._onDidConnect.event;
@@ -42,7 +51,7 @@ export class ConnectionManager {
         };
     }
 
-    async connect(config: { host: string; port: number; password?: string; database?: number; tls?: boolean }): Promise<Redis> {
+    async connect(config: ConnectionConfig): Promise<Redis> {
         if (this.client) {
             await this.disconnect();
         }

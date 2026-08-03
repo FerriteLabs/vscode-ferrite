@@ -658,6 +658,7 @@ export function parseCommand(cmd: string): string[] {
     let inQuote = false;
     let quoteChar = '';
     let escape = false;
+    let tokenStarted = false;
 
     for (let i = 0; i < cmd.length; i++) {
         const char = cmd[i];
@@ -665,6 +666,7 @@ export function parseCommand(cmd: string): string[] {
         if (escape) {
             current += char;
             escape = false;
+            tokenStarted = true;
             continue;
         }
 
@@ -679,9 +681,11 @@ export function parseCommand(cmd: string): string[] {
             if (current) {
                 parts.push(current);
                 current = '';
+                tokenStarted = false;
             }
             inQuote = true;
             quoteChar = char;
+            tokenStarted = true;
             continue;
         }
 
@@ -692,17 +696,19 @@ export function parseCommand(cmd: string): string[] {
         }
 
         if (char === ' ' && !inQuote) {
-            if (current) {
+            if (tokenStarted) {
                 parts.push(current);
                 current = '';
+                tokenStarted = false;
             }
             continue;
         }
 
         current += char;
+        tokenStarted = true;
     }
 
-    if (current) {
+    if (tokenStarted) {
         parts.push(current);
     }
 

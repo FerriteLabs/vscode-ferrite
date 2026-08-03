@@ -110,28 +110,28 @@ suite('Connection Integration Tests', () => {
         // ─── Offline tests (no server required) ────────────────────────
 
         test('formatResult handles string values', () => {
-            const result = formatResult('OK');
+            const result = formatResult('OK', 'json');
             assert.ok(typeof result === 'string');
         });
 
         test('formatResult handles null', () => {
-            const result = formatResult(null);
+            const result = formatResult(null, 'json');
             assert.ok(typeof result === 'string');
         });
 
         test('formatResult handles arrays', () => {
-            const result = formatResult(['a', 'b', 'c']);
+            const result = formatResult(['a', 'b', 'c'], 'json');
             assert.ok(typeof result === 'string');
             assert.ok(result.includes('a'));
         });
 
         test('formatResult handles nested arrays', () => {
-            const result = formatResult([['key1', 'val1'], ['key2', 'val2']]);
+            const result = formatResult([['key1', 'val1'], ['key2', 'val2']], 'json');
             assert.ok(typeof result === 'string');
         });
 
         test('formatResult handles integers', () => {
-            const result = formatResult(42);
+            const result = formatResult(42, 'json');
             assert.ok(result.includes('42'));
         });
 
