@@ -3,7 +3,6 @@ import Redis from 'ioredis';
 import * as vscode from 'vscode';
 
 // Local modules (sorted alphabetically)
-import { ConnectionManager } from './connectionManager';
 import { FerriteQLCompletionProvider } from './ferriteql-completions';
 import { KeysTreeProvider } from './providers/keysTreeProvider';
 import { ServerInfoTreeProvider } from './providers/serverInfoTreeProvider';
@@ -19,10 +18,6 @@ let configDiagnostics: vscode.DiagnosticCollection;
 // Pub/Sub state
 let subscriberClient: Redis | null = null;
 const activeSubscriptions = new Set<string>();
-
-// Connection manager extracted for better modularity and testability
-// Protocol parsing is delegated to parseCommand() utility
-const connectionManager = new ConnectionManager();
 
 // Status bar configuration for connected server info display
 const STATUS_BAR_PRIORITY = 200;
@@ -130,7 +125,6 @@ export function deactivate() {
     if (client) {
         client.quit();
     }
-    connectionManager?.dispose();
     statusBarItem?.dispose();
     outputChannel?.dispose();
     pubsubOutputChannel?.dispose();
