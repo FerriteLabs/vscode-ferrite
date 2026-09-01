@@ -24,6 +24,8 @@ jobs:
         uses: coactions/setup-xvfb@v1
         with:
           run: npm test
+      - name: Verify VSIX packaging
+        run: npm run package
 
   gitleaks:
     name: Secret Scanning
