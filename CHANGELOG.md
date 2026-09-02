@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - Unreleased (planned)
+
+### Changed
+
+- Isolated configuration validation, command parsing, result formatting, language UI, and connection-profile tree responsibilities
+- Removed the unused competing connection owner while preserving activation and command behavior
+- Aligned completion metadata on the canonical `VECTOR.DEL` command
+- Restored reproducible compile, lint, Electron test, packaging, and dependency-security gates
+- Raised the minimum supported VS Code version to 1.96 to match the tested API surface
+- Restored the marketplace and activity-bar icon assets required by VSIX packaging
+- Bundle the extension and its `ioredis` runtime dependency into the published VSIX
+- Align Marketplace links with the packaged `ferrite.ferrite` extension identity
+- Require the exact canonical `v1.4.0` tag before Marketplace publication
+- Use reachable GitHub project and documentation links until the hosted documentation endpoint is deployed and verified
+
+## [1.3.1] - 2026-04-22
+
+### Added
+
+- TLS certificate-verification configuration
+
+### Fixed
+
+- Improved connection reliability and surfaced key-loading failures through the extension output channel
+
 ## [1.3.0] - 2026-04-20
 
 ### Added
@@ -61,7 +86,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Snippets (FerriteQL)**: Common commands (GET, SET, HSET, ZADD, VECTOR.SEARCH, TS.ADD)
 - **Diagnostics**: Real-time validation with error and typo detection
 
-[Unreleased]: https://github.com/ferritelabs/vscode-ferrite/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/ferritelabs/vscode-ferrite/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/ferritelabs/vscode-ferrite/compare/v1.3.1...v1.4.0
+[1.3.1]: https://github.com/ferritelabs/vscode-ferrite/compare/v1.3.0...v1.3.1
+[1.3.0]: https://github.com/ferritelabs/vscode-ferrite/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/ferritelabs/vscode-ferrite/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/ferritelabs/vscode-ferrite/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/ferritelabs/vscode-ferrite/releases/tag/v1.0.0
@@ -71,4 +99,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Connection timeout on large clusters**: The default connection timeout has been increased
   from 5s to 10s. Override with `ferrite.connectTimeout` in your VS Code settings.
 - **Auto-reconnect not triggering**: Ensure `ferrite.autoReconnect` is set to `true` (default).
-
