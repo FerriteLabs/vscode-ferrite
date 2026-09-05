@@ -182,7 +182,7 @@ export class FerriteQLCompletionProvider implements vscode.CompletionItemProvide
             { cmd: 'VECTOR.CREATE', detail: 'Create vector index' },
             { cmd: 'VECTOR.ADD', detail: 'Add vector to index' },
             { cmd: 'VECTOR.SEARCH', detail: 'KNN vector search' },
-            { cmd: 'VECTOR.DELETE', detail: 'Delete vector from index' },
+            { cmd: 'VECTOR.DEL', detail: 'Delete vector from index' },
             { cmd: 'VECTOR.INFO', detail: 'Get index info' },
             // Semantic Cache
             { cmd: 'SEMANTIC.SET', detail: 'Store with semantic key' },

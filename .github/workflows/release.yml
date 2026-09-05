@@ -13,6 +13,9 @@ on:
         default: 'false'
         type: boolean
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build & Package
@@ -23,9 +26,17 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
-      - run: npm run compile
+      - name: Verify release tag matches package version
+        if: github.event_name == 'release'
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          EXPECTED_TAG="v${VERSION}"
+          if [ "${GITHUB_REF_NAME}" != "${EXPECTED_TAG}" ]; then
+            echo "::error::Release tag ${GITHUB_REF_NAME} does not match expected ${EXPECTED_TAG}"
+            exit 1
+          fi
       - name: Package VSIX
-        run: npx @vscode/vsce package --no-dependencies
+        run: npm run package
       - name: Upload VSIX artifact
         uses: actions/upload-artifact@v4
         with:
@@ -36,16 +47,23 @@ jobs:
     name: Publish to Marketplace
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' || github.event_name == 'repository_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.publish == true)
+    if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.publish == true)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
       - run: npm ci
-      - run: npm run compile
+      - name: Require exact release tag
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          EXPECTED_TAG="v${VERSION}"
+          if [ "$GITHUB_REF" != "refs/tags/${EXPECTED_TAG}" ]; then
+            echo "::error::Marketplace publication must run from refs/tags/${EXPECTED_TAG}"
+            exit 1
+          fi
       - name: Publish to VS Code Marketplace
-        run: npx @vscode/vsce publish --no-dependencies
+        run: npm run publish
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
       - name: Publish to Open VSX Registry

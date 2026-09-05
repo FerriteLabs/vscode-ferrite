@@ -1,9 +1,17 @@
 .vscode/**
 .vscode-test/**
+.devcontainer/**
+.github/**
 src/**
+scripts/**
 node_modules/**
 .gitignore
 .eslintrc.json
 tsconfig.json
 **/*.ts
 **/*.map
+AUDIT.md
+CONTRIBUTING.md
+CONTRIBUTING_QUICKSTART.md
+SECURITY.md
+SUPPORT.md

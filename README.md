@@ -2,10 +2,10 @@
 
 [![CI](https://github.com/ferritelabs/vscode-ferrite/actions/workflows/ci.yml/badge.svg)](https://github.com/ferritelabs/vscode-ferrite/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
-[![VS Code Marketplace](https://img.shields.io/badge/VS%20Code-Marketplace-007ACC)](https://marketplace.visualstudio.com/items?itemName=ferritelabs.ferrite)
-[![VS Code Engine](https://img.shields.io/badge/vscode-%5E1.85.0-blue)](https://code.visualstudio.com/)
+[![VS Code Marketplace](https://img.shields.io/badge/VS%20Code-Marketplace-007ACC)](https://marketplace.visualstudio.com/items?itemName=ferrite.ferrite)
+[![VS Code Engine](https://img.shields.io/badge/vscode-%5E1.96.0-blue)](https://code.visualstudio.com/)
 
-Official VS Code extension for [Ferrite](https://ferrite.dev) - a high-performance, tiered-storage key-value store.
+Official VS Code extension for [Ferrite](https://github.com/ferritelabs/ferrite) - a high-performance, tiered-storage key-value store.
 
 ## Features
 
@@ -58,7 +58,7 @@ Snippets for common operations in multiple languages:
 ### From VSIX
 
 ```bash
-code --install-extension ferrite-1.0.0.vsix
+code --install-extension ferrite-1.4.0.vsix
 ```
 
 ## Quick Start
@@ -301,8 +301,6 @@ Apache 2.0 - See [LICENSE](LICENSE) for details.
 
 ## Resources
 
-- [Ferrite Documentation](https://ferrite.dev/docs)
+- [Ferrite Documentation](https://github.com/ferritelabs/ferrite-docs)
 - [GitHub Repository](https://github.com/ferritelabs/ferrite)
 - [Issue Tracker](https://github.com/ferritelabs/ferrite/issues)
-
-
